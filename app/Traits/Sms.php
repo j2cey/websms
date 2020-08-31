@@ -95,6 +95,7 @@ trait Sms
 
         // Start
         $this->sendingend_at = Carbon::now();
+        $this->stat_done = true;
         $this->save();
     }
 }
