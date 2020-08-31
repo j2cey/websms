@@ -94,6 +94,8 @@ class SmscampaignController extends Controller
         if ($request->has('premiere_ligne_entete')) {
             //remove first line
             $data = array_slice($file, 1);
+        } else {
+            $data = $file;
         }
 
         $formInput = $request->all();
