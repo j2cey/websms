@@ -50,8 +50,9 @@ class SmscampaignPlanning extends Model
 
             // Set End Date
             if (!$this->sendingend_at) {
-                $last_result = $this->results()->max('sendingend_at')->first();
-                $this->sendingend_at = $last_result->sendingend_at;
+                //$last_result = $this->results()->max('sendingend_at')->first();
+                $last_date = DB::table('smscampaign_planning_results')->where('smscampaign_planning_id', $this->id)->max('sendingend_at');
+                $this->sendingend_at = $last_date;
             }
         } elseif ($this->stat_done > 0) {
             // traitement en cours
@@ -59,8 +60,9 @@ class SmscampaignPlanning extends Model
 
             // Set Start Date
             if (!$this->sendingstart_at) {
-                $first_result = $this->results()->min('sendingstart_at')->first();
-                $this->sendingstart_at = $first_result->sendingstart_at;
+                //$first_result = $this->results()->min('sendingstart_at')->first();
+                $first_date = DB::table('smscampaign_planning_results')->where('smscampaign_planning_id', $this->id)->min('sendingstart_at');
+                $this->sendingstart_at = $first_date;
             }
         } else {
             // attente traitement
