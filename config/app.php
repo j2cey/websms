@@ -24,10 +24,10 @@ return [
     |
     */
     'SMPP_HOST' => env('SMPP_HOST', 'xxxx'),
-    'SMPP_PORT' => env('SMPP_HOST', 'xxxx'),
-    'SMSC_SYSTEMID' => env('SMPP_HOST', 'xxxx'),
-    'SMSC_PASSWORD' => env('SMPP_HOST', 'xxxx'),
-    'SMSC_SYSTEMTYPE' => env('SMPP_HOST', 'xxxx'),
+    'SMPP_PORT' => env('SMPP_PORT', 'xxxx'),
+    'SMSC_SYSTEMID' => env('SMSC_SYSTEMID', 'xxxx'),
+    'SMSC_PASSWORD' => env('SMSC_PASSWORD', 'xxxx'),
+    'SMSC_SYSTEMTYPE' => env('SMSC_SYSTEMTYPE', 'xxxx'),
 
 
     'smscampaigns_filesfolder' => env('SMSCAMPAIGN_FILESFOLDER', 'uploads/smscampaigns/files'),
