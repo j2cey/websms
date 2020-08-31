@@ -58,7 +58,7 @@ class SmscampaignSend extends Command
             $campaign = Smscampaign::where('id',$planning->smscampaign_id)->first();
             $planningresult_line->sendSms($campaign->expediteur,$receiver->mobile,$planningresult_line->message);*/
 
-            $this->sendSms();
+            $planningresult_line->sendSms();
             $nb_done = $nb_done + 1;
         }
 
