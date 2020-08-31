@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\SmscampaignImportfiles::class,
+        Commands\SmscampaignSend::class,
     ];
 
     /**
@@ -26,6 +27,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('smscampaign:importfiles')
             ->everyMinute();
+        /*$schedule->command('smscampaign:send')
+            ->everyMinute();*/
     }
 
     /**
