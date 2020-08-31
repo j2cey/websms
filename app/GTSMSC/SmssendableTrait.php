@@ -14,14 +14,15 @@ require_once $GLOBALS['SMPP_ROOT'].'/transport/tsocket.class.php';
 require_once $GLOBALS['SMPP_ROOT'].'/class/customencoder.class.php';
 require_once $GLOBALS['SMPP_ROOT'].'/class/customlog.class.php';
 
-// Simple debug callback
-public function printDebug($str) {
-    echo date('Ymd H:i:s ').$str."\r\n";
-}
-
 trait SmssendableTrait
 {
     public function sendSms($from_rqst,$to_rqst,$msg_rqst) {
+
+        // Simple debug callback
+        function printDebug($str) {
+            echo date('Ymd H:i:s ').$str."\r\n";
+        }
+
         //$receiver = SmscampaignReceiver::where('id',$this->smscampaign_receiver_id)->first();
         //$planning = SmscampaignPlanning::where('id',$this->smscampaign_planning_id)->first();
         //$campaign = Smscampaign::where('id',$planning->smscampaign_id)->first();
