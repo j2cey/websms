@@ -129,7 +129,7 @@ class SmscampaignController extends Controller
         }
 
         // Sessions Message
-        $request->session()->flash('msg_success',"Campagne créé avaec Succès.");
+        $request->session()->flash('msg_success',"Campagne créée avaec Succès.");
 
         return redirect()->action('SmscampaignController@index');
     }
