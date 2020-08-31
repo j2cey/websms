@@ -4,6 +4,8 @@
 namespace App\Traits;
 
 
+use App\Smscampaign;
+use App\SmscampaignPlanning;
 use App\SmscampaignReceiver;
 use App\Traits\SMS\protocol\SmppClient;
 use App\Traits\SMS\transport\TSocket;
@@ -12,14 +14,15 @@ use Illuminate\Support\Carbon;
 trait Sms
 {
     public function sendSms() {
-        $receiver = new SmscampaignReceiver();
-        $receiver = $this->receiver;
+        $receiver = SmscampaignReceiver::where('id',$this->smscampaign_receiver_id)->first();
+        $planning = SmscampaignPlanning::where('id',$this->smscampaign_planning_id)->first();
+        $campaign = Smscampaign::where('id',$planning->smscampaign_id)->first();
 
         // Start
         $this->sendingstart_at = Carbon::now();
 
-        $from_rqst = $this->planning->campaign->expediteur;
-        $to_rqst=isset($this->receiver->mobile)?(string)htmlentities($this->receiver->mobile,ENT_QUOTES,'utf-8'):'';
+        $from_rqst = $campaign->expediteur;
+        $to_rqst=isset($receiver->mobile)?(string)htmlentities($receiver->mobile,ENT_QUOTES,'utf-8'):'';
         $msg_rqst=isset($this->message)?utf8_encode(CustomEncoder::encode_accented_chars($this->message)):'';
 
         $msg = $msg_rqst;
