@@ -8,7 +8,7 @@ use App\Smscampaign;
 use App\SmscampaignPlanning;
 use App\SmscampaignReceiver;
 use App\Traits\SMS\protocol\SmppClient;
-use App\Traits\SMS\transport\TSocket;
+use App\Traits\SMS\CustomEncoder;
 use Illuminate\Support\Carbon;
 
 trait Sms
