@@ -18,10 +18,7 @@ trait SmssendableTrait
 {
     public function sendSms($from_rqst,$to_rqst,$msg_rqst) {
 
-        // Simple debug callback
-        function printDebug($str) {
-            echo date('Ymd H:i:s ').$str."\r\n";
-        }
+
 
         //$receiver = SmscampaignReceiver::where('id',$this->smscampaign_receiver_id)->first();
         //$planning = SmscampaignPlanning::where('id',$this->smscampaign_planning_id)->first();

@@ -38,4 +38,9 @@ class SmscampaignPlanningResult extends Model
     public function receiver() {
         return $this->belongsTo('App\SmscampaignPlanningReceiver');
     }
+
+    // Simple debug callback
+    public function printDebug($str) {
+        echo date('Ymd H:i:s ').$str."\r\n";
+    }
 }
