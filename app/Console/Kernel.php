@@ -27,8 +27,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('smscampaign:importfiles')
             ->everyMinute();
-        /*$schedule->command('smscampaign:send')
-            ->everyMinute();*/
+        $schedule->command('smscampaign:send')
+            ->everyMinute();
     }
 
     /**
