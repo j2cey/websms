@@ -5,6 +5,7 @@ namespace App\Traits\SMS\protocol;
 
 use App\Traits\SMS\transport\TTransport;
 use App\Traits\SMS\transport\TTransportException;
+use RuntimeException;
 
 /**
  * Class for receiving or sending sms through SMPP protocol.
