@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property integer|null $smscampaign_status_id
  *
+ * @property integer $planning_sending
+ * @property integer $planning_done
+ *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
@@ -28,6 +31,20 @@ class Smscampaign extends Model
 
     public function status() {
         return $this->belongsTo('App\SmscampaignStatus', 'smscampaign_status_id');
+    }
+
+    public function plannings() {
+        return $this->hasMany('App\SmscampaignPlanning');
+    }
+
+    public function planningsSending() {
+        // traitement en cours
+        return $this->plannings()->where('smscampaign_status_id', SmscampaignStatus::coded("2")->first()->id);
+    }
+
+    public function planningsDone() {
+        // fin traitement
+        return $this->plannings()->where('smscampaign_status_id', SmscampaignStatus::coded("3")->first()->id);
     }
 
     public function scopeSearch($query,$titre,$exp,$campstatus,$descript,$dt_deb,$dt_fin) {
@@ -49,5 +66,23 @@ class Smscampaign extends Model
         }
 
         return $query;
+    }
+
+    public function setStatus() {
+        $this->planning_sending = $this->planningsSending()->count();
+        $this->planning_done = $this->planningsDone()->count();
+
+        if ($this->planning_sending == $this->planning_done) {
+            // fin traitement
+            $this->smscampaign_status_id = SmscampaignStatus::coded("3")->first()->id;
+        } elseif ($this->planning_sending > 0) {
+            // traitement en cours
+            $this->smscampaign_status_id = SmscampaignStatus::coded("2")->first()->id;
+        } else {
+            // attente traitement
+            $this->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
+        }
+
+        $this->save();
     }
 }

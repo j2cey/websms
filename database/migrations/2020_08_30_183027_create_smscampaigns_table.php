@@ -23,6 +23,9 @@ class CreateSmscampaignsTable extends Migration
             $table->string('separateur_colonnes')->nullable()->comment('separateur de colonnes dans le fichier');
             $table->boolean('messages_individuels')->default(false)->comment('determine si la campagne a un message individuel par destinataire');
 
+            $table->integer('planning_sending')->default(0)->comment('nombre de planifications en cours');
+            $table->integer('planning_done')->default(0)->comment('nombre de planifications effectuées');
+
             $table->foreignId('smscampaign_status_id')->nullable()
                 ->comment('Reference du statut')
                 ->constrained()->onDelete('set null');

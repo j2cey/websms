@@ -19,4 +19,10 @@ use Illuminate\Database\Eloquent\Model;
 class SmscampaignStatus extends Model
 {
     protected $guarded = [];
+
+    public function scopeCoded($query, $code) {
+        return $query
+            ->where('code', $code)
+            ;
+    }
 }
