@@ -42,10 +42,10 @@ trait SmssendableTrait
 
         try {
             // Construct transport and client, customize settings
-            $transport = new TSocket(config('app.SMPP_HOST'),2775,false,'printDebug'); // hostname/ip (ie. localhost) and port (ie. 2775)
+            $transport = new TSocket(config('app.SMPP_HOST'),2775,false,[$this, 'printDebug']); // hostname/ip (ie. localhost) and port (ie. 2775)
             $transport->setRecvTimeout(10000);
             $transport->setSendTimeout(10000);
-            $smpp = new SmppClient($transport,'printDebug');
+            $smpp = new SmppClient($transport,[$this, 'printDebug']);
 
             // Activate debug of server interaction
             $smpp->debug = true; 		// binary hex-output
@@ -85,7 +85,7 @@ trait SmssendableTrait
                 //$this->save();
             } catch (\Exception $ue) {
                 // if that fails just close the transport
-                printDebug("Failed to unbind; '".$ue->getMessage()."' closing transport");
+                $this->printDebug("Failed to unbind; '".$ue->getMessage()."' closing transport");
                 //$this->stat_failed_msg = $ue->getMessage();
                 if ($transport->isOpen()) $transport->close();
                 //$this->save();
