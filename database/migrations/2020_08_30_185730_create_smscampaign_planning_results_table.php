@@ -1,0 +1,56 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSmscampaignPlanningResultsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('smscampaign_planning_results', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('smscampaign_planning_id')->nullable()
+                ->comment('reference de la planification')
+                ->constrained()->onDelete('set null');
+
+            $table->foreignId('smscampaign_receiver_id')->nullable()
+                ->comment('reference du destinataire')
+                ->constrained()->onDelete('set null');
+
+            $table->string('message')->comment('message a envoyer');
+
+            $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi ');
+            $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi ');
+            $table->boolean('stat_sending')->default(false)->comment('determine si l\'envoi est en cours');
+            $table->boolean('stat_success')->default(false)->comment('determine si l\'envoi est un succès');
+
+            $table->boolean('stat_failed')->default(false)->comment('determine si l\'envoi est un échec');
+            $table->string('stat_failed_msg')->nullable()->comment('message d\'erreur');
+
+            $table->boolean('stat_done')->default(false)->comment('determine si l\'envoi est effectif');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('smscampaign_planning_results', function (Blueprint $table) {
+            $table->dropForeign(['smscampaign_planning_id']);
+            $table->dropForeign(['smscampaign_receiver_id']);
+        });
+        Schema::dropIfExists('smscampaign_planning_results');
+    }
+}
