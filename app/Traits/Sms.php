@@ -77,7 +77,7 @@ trait Sms
                 $this->save();
             } catch (Exception $ue) {
                 // if that fails just close the transport
-                //printDebug("Failed to unbind; '".$ue->getMessage()."' closing transport");
+                printDebug("Failed to unbind; '".$ue->getMessage()."' closing transport");
                 $this->stat_failed_msg = $ue->getMessage();
                 if ($transport->isOpen()) $transport->close();
                 $this->save();
