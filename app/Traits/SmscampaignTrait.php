@@ -13,10 +13,11 @@ trait SmscampaignTrait
 {
     public function importFile(SmscampaignFile $file) {
         $pendingfiles_dir = config('app.smscampaigns_filesfolder');
+        $raw_dir = config('app.RAW_FOLDER');
         $file_fullpath = $pendingfiles_dir.'/'.$file->name;
         $campaign = $file->campaign;
 
-        $csvData = file_get_contents('/var/www/websms/public/'.$file_fullpath); // separateur_colonnes
+        $csvData = file_get_contents($raw_dir.'/'.$file_fullpath); // separateur_colonnes
         //$rows = array_map("str_getcsv", explode($campaign->separateur_colonnes, $csvData));
         $rows = array_map("str_getcsv", explode("\n", $csvData));
 

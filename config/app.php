@@ -31,6 +31,7 @@ return [
 
 
     'smscampaigns_filesfolder' => env('SMSCAMPAIGN_FILESFOLDER', 'uploads/smscampaigns/files'),
+    'RAW_FOLDER' => env('RAW_FOLDER', '/var/www/websms/public'),
 
     /*
     |--------------------------------------------------------------------------
