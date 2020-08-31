@@ -578,7 +578,7 @@ class SmppClient
 		// Read PDU body
 		if($length-16>0){
 			$body=$this->transport->readAll($length-16);
-			if(!$body) throw new RuntimeException('Could not read PDU body');
+			if(!$body) throw new \RuntimeException('Could not read PDU body');
 		} else {
 			$body=null;
 		}
@@ -656,7 +656,7 @@ class SmppClient
 
 }
 
-class SmppException extends RuntimeException
+class SmppException extends \RuntimeException
 {
 
 }
