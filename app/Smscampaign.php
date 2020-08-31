@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property integer $planning_sending
  * @property integer $planning_done
+ * @property integer $planning_waiting
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
@@ -47,6 +48,11 @@ class Smscampaign extends Model
         return $this->plannings()->where('smscampaign_status_id', SmscampaignStatus::coded("3")->first()->id);
     }
 
+    public function planningsWaiting() {
+        // fin traitement
+        return $this->plannings()->where('smscampaign_status_id', SmscampaignStatus::coded("1")->first()->id);
+    }
+
     public function scopeSearch($query,$titre,$exp,$campstatus,$descript,$dt_deb,$dt_fin) {
         if ($titre == null && ($dt_deb == null || $dt_fin == null) && $campstatus == null && $exp == null && $descript == null) return $query;
 
@@ -71,16 +77,17 @@ class Smscampaign extends Model
     public function setStatus() {
         $this->planning_sending = $this->planningsSending()->count();
         $this->planning_done = $this->planningsDone()->count();
+        $this->planning_waiting = $this->planningsWaiting()->count();
 
-        if ($this->planning_sending == $this->planning_done) {
-            // fin traitement
-            $this->smscampaign_status_id = SmscampaignStatus::coded("3")->first()->id;
+        if ($this->planning_waiting > 0) {
+            // attente traitement
+            $this->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
         } elseif ($this->planning_sending > 0) {
             // traitement en cours
             $this->smscampaign_status_id = SmscampaignStatus::coded("2")->first()->id;
         } else {
-            // attente traitement
-            $this->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
+            // fin traitement
+            $this->smscampaign_status_id = SmscampaignStatus::coded("3")->first()->id;
         }
 
         $this->save();

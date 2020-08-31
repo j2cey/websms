@@ -25,6 +25,7 @@ class CreateSmscampaignsTable extends Migration
 
             $table->integer('planning_sending')->default(0)->comment('nombre de planifications en cours');
             $table->integer('planning_done')->default(0)->comment('nombre de planifications effectuées');
+            $table->integer('planning_waiting')->default(0)->comment('nombre de planifications en attente de traitement');
 
             $table->foreignId('smscampaign_status_id')->nullable()
                 ->comment('Reference du statut')
