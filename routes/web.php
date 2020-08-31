@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 });*/
 
-Route::get('/', 'DashboardController@index')->middleware('auth');
+//Route::get('/', 'DashboardController@index')->middleware('auth');
+Route::get('/', 'SmscampaignController@index')->middleware('auth');
 
 Auth::routes();
 
