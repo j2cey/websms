@@ -1,0 +1,36 @@
+param1=DSISMS param2=24165300354
+
+Notice: Undefined variable: msg_smpl in C:\wamp64\www\GTSMSC\send_smppclient.php on line 37
+<pre><h1>MSG a ENVOYER**</h1>NULL
+</pre>20200820 09:52:55 Binding transmitter...
+20200820 09:52:55 Send PDU         : 42 bytes
+20200820 09:52:55  00 00 00 2a 00 00 00 02 00 00 00 00 00 00 00 01 53 65 65 67 70 75 73 68 00 53 65 65 67 70 75 73 68 00 57 57 57 00 34 00 00 00 
+20200820 09:52:55  command_id      : 0x2
+20200820 09:52:55  sequence number : 1
+20200820 09:52:55 Read PDU         : 30 bytes
+20200820 09:52:55  00 00 00 1e 80 00 00 02 00 00 00 00 00 00 00 01 53 65 65 67 70 75 73 68 00 02 10 00 01 34 
+20200820 09:52:55  command id      : 0x80000002
+20200820 09:52:55  command status  : 0x0 No Error
+20200820 09:52:55  sequence number : 1
+20200820 09:52:55 Binding status  : 0
+20200820 09:52:55 Send PDU         : 59 bytes
+20200820 09:52:55  00 00 00 3b 00 00 00 04 00 00 00 00 00 00 00 02 00 05 00 44 53 49 53 4d 53 00 01 01 32 34 31 36 35 33 30 30 33 35 34 00 00 00 00 00 00 00 00 00 00 09 68 65 6c 6c 6f 11 73 6d 73 
+20200820 09:52:55  command_id      : 0x4
+20200820 09:52:55  sequence number : 2
+20200820 09:52:55 Read PDU         : 25 bytes
+20200820 09:52:55  00 00 00 19 80 00 00 04 00 00 00 00 00 00 00 02 39 30 31 66 35 66 39 63 00 
+20200820 09:52:55  command id      : 0x80000004
+20200820 09:52:55  command status  : 0x0 No Error
+20200820 09:52:55  sequence number : 2
+20200820 09:52:55 Unbinding...
+20200820 09:52:55 Send PDU         : 16 bytes
+20200820 09:52:55  00 00 00 10 00 00 00 06 00 00 00 00 00 00 00 03 
+20200820 09:52:55  command_id      : 0x6
+20200820 09:52:55  sequence number : 3
+20200820 09:52:55 Read PDU         : 16 bytes
+20200820 09:52:55  00 00 00 10 80 00 00 06 00 00 00 00 00 00 00 03 
+20200820 09:52:55  command id      : 0x80000006
+20200820 09:52:55  command status  : 0x0 No Error
+20200820 09:52:55  sequence number : 3
+20200820 09:52:55 Unbind status   : 0
+Appuyez sur une touche pour continuer... 

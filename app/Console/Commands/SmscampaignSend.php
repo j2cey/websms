@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Smscampaign;
+use App\SmscampaignPlanning;
 use App\SmscampaignPlanningResult;
+use App\SmscampaignReceiver;
 use Illuminate\Console\Command;
 
 class SmscampaignSend extends Command
@@ -50,7 +53,10 @@ class SmscampaignSend extends Command
                 sleep(20);
                 $nb_done = 0;
             }
-            $planningresult_line->sendSms();
+            $receiver = SmscampaignReceiver::where('id',$planningresult_line->smscampaign_receiver_id)->first();
+            $planning = SmscampaignPlanning::where('id',$planningresult_line->smscampaign_planning_id)->first();
+            $campaign = Smscampaign::where('id',$planning->smscampaign_id)->first();
+            $planningresult_line->sendSms($campaign->expediteur,$receiver->mobile,$planningresult_line->message);
             $nb_done = $nb_done + 1;
         }
 
