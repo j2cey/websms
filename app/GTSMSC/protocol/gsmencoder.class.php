@@ -1,21 +1,22 @@
 <?php
+namespace App\GTSMSC;
 /**
  * Class capable of encoding GSM 03.38 default alphabet and packing octets into septets as described by GSM 03.38.
  * Based on mapping: http://www.unicode.org/Public/MAPPINGS/ETSI/GSM0338.TXT
- * 
+ *
  * Copyright (C) 2011 OnlineCity
  * Licensed under the MIT license, which can be read at: http://www.opensource.org/licenses/mit-license.php
  * @author hd@onlinecity.dk
  */
 class GsmEncoder
 {
-	
+
 	/**
 	 * Encode an UTF-8 string into GSM 03.38
 	 * Since UTF-8 is largely ASCII compatible, and GSM 03.38 is somewhat compatible, unnecessary conversions are removed.
 	 * Specials chars such as € can be encoded by using an escape char \x1B in front of a backwards compatible (similar) char.
-	 * UTF-8 chars which doesn't have a GSM 03.38 equivalent is replaced with a question mark. 
-	 * UTF-8 continuation bytes (\x08-\xBF) are replaced when encountered in their valid places, but 
+	 * UTF-8 chars which doesn't have a GSM 03.38 equivalent is replaced with a question mark.
+	 * UTF-8 continuation bytes (\x08-\xBF) are replaced when encountered in their valid places, but
 	 * any continuation bytes outside of a valid UTF-8 sequence is not processed.
 	 *
 	 * @param string $string
@@ -35,15 +36,15 @@ class GsmEncoder
 			'^' => "\x1B\x14", '{' => "\x1B\x28", '}' => "\x1B\x29", '\\' => "\x1B\x2F", '[' => "\x1B\x3C", '~' => "\x1B\x3D", ']' => "\x1B\x3E", '|' => "\x1B\x40", '€' => "\x1B\x65"
 		);
 		$converted = strtr($string, $dict);
-		
+
 		// Replace unconverted UTF-8 chars from codepages U+0080-U+07FF, U+0080-U+FFFF and U+010000-U+10FFFF with a single ?
 		return preg_replace('/([\\xC0-\\xDF].)|([\\xE0-\\xEF]..)|([\\xF0-\\xFF]...)/m','?',$converted);
 	}
-	
+
 	/**
 	 * Count the number of GSM 03.38 chars a conversion would contain.
 	 * It's about 3 times faster to count than convert and do strlen() if conversion is not required.
-	 * 
+	 *
 	 * @param string $utf8String
 	 * @return integer
 	 */

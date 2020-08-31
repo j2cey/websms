@@ -1,4 +1,5 @@
 <?php
+namespace App\GTSMSC;
 require_once $GLOBALS['SMPP_ROOT'].'/transport/texception.class.php';
 
 /*

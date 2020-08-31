@@ -1,2 +1,3 @@
 <?php
-class TException extends Exception { };
+namespace App\GTSMSC;
+class TException extends \Exception { };

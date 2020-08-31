@@ -70,14 +70,14 @@ trait SmssendableTrait
             // Close connection
             $smpp->close();
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Try to unbind
             $this->stat_failed = true;
             try {
                 $smpp->close();
                 //$this->stat_failed_msg = $e->getMessage();
                 //$this->save();
-            } catch (Exception $ue) {
+            } catch (\Exception $ue) {
                 // if that fails just close the transport
                 printDebug("Failed to unbind; '".$ue->getMessage()."' closing transport");
                 //$this->stat_failed_msg = $ue->getMessage();
