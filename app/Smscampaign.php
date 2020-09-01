@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $separateur_colonnes
  * @property boolean $messages_individuels
  *
+ * @property integer|null $smscampaign_type_id
  * @property integer|null $smscampaign_status_id
  *
  * @property integer $planning_sending
@@ -29,6 +30,10 @@ use Illuminate\Database\Eloquent\Model;
 class Smscampaign extends Model
 {
     protected $guarded = [];
+
+    public function type() {
+        return $this->belongsTo('App\SmscampaignType', 'smscampaign_type_id');
+    }
 
     public function status() {
         return $this->belongsTo('App\SmscampaignStatus', 'smscampaign_status_id');

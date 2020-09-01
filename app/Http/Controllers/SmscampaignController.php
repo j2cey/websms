@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 use App\Traits\SmscampaignTrait;
+use Illuminate\Support\Facades\DB;
 
 class SmscampaignController extends Controller
 {
@@ -65,11 +66,13 @@ class SmscampaignController extends Controller
     public function create()
     {
         $smscampaign = new Smscampaign();
+        $smscampaign_types = DB::table('smscampaign_types')->get()->pluck('titre', 'id');
 
         $nowdate = Carbon::now();
 
         return view('smscampaigns.create')
             ->with('nowdate', $nowdate)
+            ->with('smscampaign_types', $smscampaign_types)
             ->with('smscampaign', $smscampaign);
     }
 
@@ -82,7 +85,11 @@ class SmscampaignController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'fichier_destinataires' => 'required|mimes:csv,txt'
+            'fichier_destinataires' => 'required|mimes:csv,txt',
+            'titre' => 'required',
+            'smscampaign_type_id' => 'required',
+            'expediteur' => 'required',
+            'separateur_colonnes' => 'required',
         ]);
 
         //get file from upload
@@ -108,6 +115,7 @@ class SmscampaignController extends Controller
             'separateur_colonnes' => $formInput['separateur_colonnes'],
             'messages_individuels' => array_key_exists('messages_individuels', $formInput),
             'smscampaign_status_id' => 1,
+            'smscampaign_type_id' => $formInput['smscampaign_type_id'],
         ]);
 
         //loop through file and split every 1000 lines

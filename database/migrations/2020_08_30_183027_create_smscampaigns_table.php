@@ -31,6 +31,10 @@ class CreateSmscampaignsTable extends Migration
                 ->comment('Reference du statut')
                 ->constrained()->onDelete('set null');
 
+            $table->foreignId('smscampaign_type_id')->nullable()
+                ->comment('Reference du type')
+                ->constrained()->onDelete('set null');
+
             $table->timestamps();
         });
     }
@@ -44,6 +48,7 @@ class CreateSmscampaignsTable extends Migration
     {
         Schema::table('smscampaigns', function (Blueprint $table) {
             $table->dropForeign(['smscampaign_status_id']);
+            $table->dropForeign(['smscampaign_type_id']);
         });
         Schema::dropIfExists('smscampaigns');
     }

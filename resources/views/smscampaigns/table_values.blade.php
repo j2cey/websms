@@ -1,4 +1,14 @@
 <td>{{ $currval->titre }}</td>
+<td>
+    @if ($currval->type->code == 0)
+        <span class="badge badge-secondary">
+    @elseif($currval->type->code == 1)
+                <span class="badge badge-secondary">
+    @else
+                        <span class="badge badge-secondary">
+    @endif
+                                    {{ $currval->type->titre }}</span>
+</td>
 <td>{{ $currval->expediteur }}</td>
 <td>{{ $currval->description }}</td>
 <td>{{ $currval->message }}</td>

@@ -16,6 +16,9 @@ class SmscampaignStatusSeeder extends Seeder
         $this->createNew("1", "attente traitement");
         $this->createNew("2", "traitement en cours");
         $this->createNew("3", "fin traitement");
+        $this->createNew("4", "fichier importé avec succès");
+        $this->createNew("5", "fichier importé avec erreurs");
+        $this->createNew("6", "échec importation fichier");
     }
 
     private function createNew($code, $title) {

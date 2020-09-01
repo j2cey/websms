@@ -6,6 +6,20 @@
     </div>
 </div>
 
+<div class="form-group row {{ $errors->has('smscampaign_type_id') ? 'has-error' : '' }}">
+    <label class="col-sm-2 col-form-label"for="smscampaign_type_id">Type</label>
+    <div class="col-sm-10">
+        <select name="smscampaign_type_id" class="smscampaign_type_id form-control" id="smscampaign_type_id" required>
+            @if(isset($smscampaign->id))
+                @foreach($smscampaign_types as $id => $display)
+                    <option value="{{ $id }}" {{ (isset($smscampaign->smscampaign_type_id) && $id === $smscampaign->smscampaign_type_id) ? 'selected' : '' }}>{{ $display }}</option>
+                @endforeach
+            @endif
+        </select>
+        <small class="text-danger">{{ $errors->has('smscampaign_type_id') ? $errors->first('smscampaign_type_id') : '' }}</small>
+    </div>
+</div>
+
 <div class="form-group row {{ $errors->has('expediteur') ? 'has-error' : '' }}">
     <label class="col-sm-2 col-form-label" for="expediteur">Expediteur</label>
     <div class="col-sm-10">
@@ -38,14 +52,6 @@
     <div class="col-sm-10">
         <input name="description" type="text" class="form-control" placeholder="Description" value="{{  old('description', $smscampaign->description ?? '') }}"/>
         <small class="text-danger">{{ $errors->has('description') ? $errors->first('description') : '' }}</small>
-    </div>
-</div>
-
-<div class="form-group row {{ $errors->has('messages_individuels') ? 'has-error' : '' }}">
-    <label class="col-sm-2 col-form-label"for="messages_individuels">Message Individuels ?</label>
-    <div class="col-sm-10">
-        <input type="checkbox" name="messages_individuels" class="switch-input" value="1" />
-        <small class="text-danger">{{ $errors->has('messages_individuels') ? $errors->first('messages_individuels') : '' }}</small>
     </div>
 </div>
 

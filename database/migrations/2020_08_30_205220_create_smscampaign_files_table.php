@@ -24,6 +24,16 @@ class CreateSmscampaignFilesTable extends Migration
             $table->boolean('imported')->default(false)->comment('determine si le fichier a deja ete importe dans la BD');
             $table->timestamp('imported_at')->nullable()->comment('date de l importation dans la BD');
 
+            $table->integer('nb_rows')->default(0)->comment('nombre total de lignes');
+            $table->integer('nb_rows_imported')->default(0)->comment('nombre total de lignes importees');
+            $table->integer('nb_rows_failed')->default(0)->comment('nombre total de lignes echouees');
+
+            $table->string('import_report')->comment('rapport d importation');
+
+            $table->foreignId('smscampaign_status_id')->nullable()
+                ->comment('Reference du statut')
+                ->constrained()->onDelete('set null');
+
             $table->timestamps();
         });
     }
@@ -37,6 +47,7 @@ class CreateSmscampaignFilesTable extends Migration
     {
         Schema::table('smscampaign_files', function (Blueprint $table) {
             $table->dropForeign(['smscampaign_id']);
+            $table->dropForeign(['smscampaign_status_id']);
         });
         Schema::dropIfExists('smscampaign_files');
     }
