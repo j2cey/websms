@@ -41,10 +41,9 @@ trait SmscampaignTrait
             $msg = "";
 
             // planning result
-            $planning_result_valdone = $this->getParameters($row[0],$campaign,$receiver,$msg,$report);
+            $row_parse_ok = $this->getParameters($row[0],$campaign,$receiver,$msg,$report);
 
-            if ($planning_result_valdone) {
-
+            if ($row_parse_ok) {
                 if ($planning->stat_all == 0) {
                     $planning->save();
                 }
@@ -81,19 +80,20 @@ trait SmscampaignTrait
         $campaignfile->save();
     }
 
-    private function parseMsg($msg_in, &$msg_out, &$report): bool {
+    private function parseMsg($msg_in, &$msg_out, &$report) {
         $parse_result = false;
         if (empty($msg_in)) {
             $msg_out = $msg_in;
             $report = $this->addToReport($report, "le message de SMS est vide");
         } else {
             $msg_out = $msg_in;
+            $parse_result = true;
             $report = $this->addToReport($report, "message recupere avec succes");
         }
         return $parse_result;
     }
 
-    private function parseMobile($mobile, &$receiver, &$report): bool {
+    private function parseMobile($mobile, &$receiver, &$report) {
         $mobile_local = substr($mobile, -8);
         $parse_result = false;
         if (is_numeric($mobile_local)) {
@@ -109,7 +109,7 @@ trait SmscampaignTrait
         return $parse_result;
     }
 
-    private function getParameters($row, $campaign, &$receiver, &$msg, &$report): bool {
+    private function getParameters($row, $campaign, &$receiver, &$msg, &$report) {
         $receiver = new SmscampaignReceiver();
         $report = "";
         $parameters_ok = false;
@@ -174,7 +174,10 @@ trait SmscampaignTrait
         }
         $report = implode(';', $report_tab);
         if (!$msg_found) {
-            $report = $report . ';' . $msg;
+            if (!empty($report)) {
+                $report = $report . ';';
+            }
+            $report = $report . $msg;
         }
         return $report;
     }
