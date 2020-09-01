@@ -87,6 +87,7 @@ class Smscampaign extends Model
         if ($this->planning_waiting > 0) {
             // attente traitement
             $this->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
+
         } elseif ($this->planning_sending > 0) {
             // traitement en cours
             $this->smscampaign_status_id = SmscampaignStatus::coded("2")->first()->id;

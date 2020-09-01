@@ -28,6 +28,9 @@ use Illuminate\Database\Eloquent\Model;
 class SmscampaignFile extends Model
 {
     protected $guarded = [];
+    protected $casts = [
+        'import_report' => 'array'
+    ];
 
     public function campaign() {
         return $this->belongsTo('App\Smscampaign', 'smscampaign_id');

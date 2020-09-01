@@ -1,7 +1,7 @@
 <td>{{ $currval->titre }}</td>
 <td>
     @if ($currval->type->code == 0)
-        <span class="badge badge-default">
+        <span class="badge badge-pill">
     @elseif($currval->type->code == 1)
                 <span class="badge badge-default">
     @else
@@ -13,20 +13,24 @@
 <td>{{ $currval->description }}</td>
 <td>{{ $currval->message }}</td>
 <td>
-    @if ($currval->status->code == 0)
+    @if ($currval->status->code == 0) <!--nouveau-->
         <span class="badge badge-default">
-    @elseif($currval->status->code == 1)
-                <span class="badge badge-primary">
-    @elseif($currval->status->code == 2)
-                        <span class="badge badge-secondary">
-    @elseif($currval->status->code == 3)
-                                <span class="badge badge-secondary">
-    @elseif($currval->status->code == 4)
-                                        <span class="badge badge-success">
-    @elseif($currval->status->code == 5)
-                                                <span class="badge badge-warning">
-    @else
-                                <span class="badge badge-danger">
-    @endif
-                                    {{ $currval->status->titre }}</span>
+    @elseif($currval->status->code == 1) <!--attente importation fichier(s)-->
+        <span class="badge badge-primary">
+    @elseif($currval->status->code == 2) <!--succès importation fichier(s)-->
+        <span class="badge badge-success">
+    @elseif($currval->status->code == 3) <!--fichier(s) importé(s) avec erreur(s)-->
+        <span class="badge badge-warning">
+    @elseif($currval->status->code == 4) <!--échec importation fichier(s)-->
+        <span class="badge badge-danger">
+    @elseif($currval->status->code == 5) <!--attente traitement-->
+        <span class="badge badge-primary">
+    @elseif($currval->status->code == 6) <!--succès traitement-->
+        <span class="badge badge-success">
+    @elseif($currval->status->code == 7) <!--traitement effectué avec erreur(s)-->
+        <span class="badge badge-warning">
+    @else <!--échec traitement-->
+        <span class="badge badge-danger">
+    @endif <!--le titre-->
+        {{ $currval->status->titre }}</span>
 </td>

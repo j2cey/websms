@@ -114,7 +114,7 @@ class SmscampaignController extends Controller
             'description' => $formInput['description'],
             'separateur_colonnes' => $formInput['separateur_colonnes'],
             'messages_individuels' => array_key_exists('messages_individuels', $formInput),
-            'smscampaign_status_id' => 1,
+            'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
             'smscampaign_type_id' => $formInput['smscampaign_type_id'],
         ]);
 
@@ -130,6 +130,7 @@ class SmscampaignController extends Controller
             $new_file = SmscampaignFile::create([
                 'name' => $filename,
                 'smscampaign_id' => $new_smscampaign->id,
+                'import_report' => json_encode([""]),
             ]);
 
             file_put_contents($filename_full, $line);

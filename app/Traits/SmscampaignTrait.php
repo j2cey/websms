@@ -62,22 +62,24 @@ trait SmscampaignTrait
         }
 
         if ($campaignfile->nb_rows_imported == $campaignfile->nb_rows) {
-            // fichier importé avec succès
-            $campaign->smscampaign_status_id = SmscampaignStatus::coded("4")->first()->id;
+            // succès importation fichier(s)
+            $campaignfile->smscampaign_status_id = SmscampaignStatus::coded("2")->first()->id;
         } elseif ($campaignfile->nb_rows_imported > 0) {
-            // fichier importé avec erreurs
-            $campaign->smscampaign_status_id = SmscampaignStatus::coded("5")->first()->id;
+            // fichier(s) importé(s) avec erreur(s)
+            $campaignfile->smscampaign_status_id = SmscampaignStatus::coded("3")->first()->id;
         } else {
-            // échec importation fichier
-            $campaign->smscampaign_status_id = SmscampaignStatus::coded("6")->first()->id;
+            // échec importation fichier(s)
+            $campaignfile->smscampaign_status_id = SmscampaignStatus::coded("4")->first()->id;
         }
-        $campaign->save();
 
         // file
         $campaignfile->import_report = $report;
         $campaignfile->imported = 1;
         $campaignfile->imported_at = Carbon::now();
         $campaignfile->save();
+
+        // campaign status
+        //$campaign->setStatus();
     }
 
     private function parseMsg($msg_in, &$msg_out, &$report) {
@@ -111,7 +113,7 @@ trait SmscampaignTrait
 
     private function getParameters($row, $campaign, &$receiver, &$msg, &$report) {
         $receiver = new SmscampaignReceiver();
-        $report = "";
+        //$report = "[]";
         $parameters_ok = false;
 
         if ($campaign->type->code == "1") {
@@ -155,6 +157,28 @@ trait SmscampaignTrait
     }
 
     private function addToReport($report, $msg) {
+        if (empty($report)) {
+            $report = json_encode([ [$msg,1],]);
+        } else {
+            $report_tab = json_decode($report);
+            $msg_found = false;
+            for ($i = 0; $i < count($report_tab); $i++) {
+                if (strpos($report_tab[$i][0], $msg) !== false) {
+                    $report_tab[$i][1] = $report_tab[$i][1] + 1;
+                    $msg_found = true;
+                    break;
+                }
+            }
+
+            if (!$msg_found) {
+                $report_tab[] = [$msg,1];
+            }
+            $report = json_encode($report_tab);
+        }
+        return $report;
+    }
+
+    private function addToReport_old($report, $msg) {
         $report_tab = explode(';', $report);
         $msg_found = false;
         for ($i = 0; $i < count($report_tab); $i++) {
@@ -163,7 +187,7 @@ trait SmscampaignTrait
                 if (count($report_line_tab) == 1) {
                     $report_line_count = 1;
                 } else {
-                    $report_line_count = (int) str_replace([')',' '], ['',''], $report_line_tab[1]);
+                    $report_line_count = (int)str_replace([')', ' '], ['', ''], $report_line_tab[1]);
                 }
                 $report_line_count = $report_line_count + 1;
                 $report_tab[$i] = $msg . ' (' . $report_line_count . ')';
