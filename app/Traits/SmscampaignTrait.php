@@ -81,7 +81,7 @@ trait SmscampaignTrait
         $campaignfile->save();
     }
 
-    private function parseMsg($msg_in, &$msg_out, &$report): Boolean {
+    private function parseMsg($msg_in, &$msg_out, &$report): bool {
         $parse_result = false;
         if (empty($msg_in)) {
             $msg_out = $msg_in;
@@ -93,7 +93,7 @@ trait SmscampaignTrait
         return $parse_result;
     }
 
-    private function parseMobile($mobile, &$receiver, &$report): Boolean {
+    private function parseMobile($mobile, &$receiver, &$report): bool {
         $mobile_local = substr($mobile, -8);
         $parse_result = false;
         if (is_numeric($mobile_local)) {
@@ -109,7 +109,7 @@ trait SmscampaignTrait
         return $parse_result;
     }
 
-    private function getParameters($row, $campaign, &$receiver, &$msg, &$report): Boolean {
+    private function getParameters($row, $campaign, &$receiver, &$msg, &$report): bool {
         $receiver = new SmscampaignReceiver();
         $report = "";
         $parameters_ok = false;
