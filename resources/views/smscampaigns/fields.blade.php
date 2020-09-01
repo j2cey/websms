@@ -10,11 +10,9 @@
     <label class="col-sm-2 col-form-label"for="smscampaign_type_id">Type</label>
     <div class="col-sm-10">
         <select name="smscampaign_type_id" class="smscampaign_type_id form-control" id="smscampaign_type_id" required>
-            @if(isset($smscampaign->id))
-                @foreach($smscampaign_types as $id => $display)
-                    <option value="{{ $id }}" {{ (isset($smscampaign->smscampaign_type_id) && $id === $smscampaign->smscampaign_type_id) ? 'selected' : '' }}>{{ $display }}</option>
-                @endforeach
-            @endif
+            @foreach($smscampaign_types as $id => $display)
+                <option value="{{ $id }}" {{ (isset($smscampaign->smscampaign_type_id) && $id === $smscampaign->smscampaign_type_id) ? 'selected' : '' }}>{{ $display }}</option>
+            @endforeach
         </select>
         <small class="text-danger">{{ $errors->has('smscampaign_type_id') ? $errors->first('smscampaign_type_id') : '' }}</small>
     </div>
