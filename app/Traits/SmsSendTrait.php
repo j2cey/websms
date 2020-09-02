@@ -17,7 +17,7 @@ use App\Traits\SMS\transport\TSocket;
 use Illuminate\Support\Carbon;
 use Exception;
 
-trait Sms
+trait SmsSendTrait
 {
     public function sendSms() {
         $receiver = SmscampaignReceiver::where('id',$this->smscampaign_receiver_id)->first();

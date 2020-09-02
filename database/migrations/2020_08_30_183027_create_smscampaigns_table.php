@@ -23,9 +23,23 @@ class CreateSmscampaignsTable extends Migration
             $table->string('separateur_colonnes')->nullable()->comment('separateur de colonnes dans le fichier');
             $table->boolean('messages_individuels')->default(false)->comment('determine si la campagne a un message individuel par destinataire');
 
+            $table->timestamp('importstart_at')->nullable()->comment('date de debut d importation des fichiers de la campagne');
+            $table->timestamp('importend_at')->nullable()->comment('date de debut d importation des fichiers de la campagne');
+
+            $table->integer('nb_to_import')->default(0)->comment('nombre de lignes a importer');
+            $table->integer('nb_import_success')->default(0)->comment('nombre de lignes importées avec succès');
+            $table->integer('nb_import_failed')->default(0)->comment('nombre de lignes dont l importation a échouée');
+
             $table->integer('planning_sending')->default(0)->comment('nombre de planifications en cours');
             $table->integer('planning_done')->default(0)->comment('nombre de planifications effectuées');
             $table->integer('planning_waiting')->default(0)->comment('nombre de planifications en attente de traitement');
+
+            $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi des SMS de la campagne');
+            $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi des SMS de la campagne');
+
+            $table->integer('nb_to_send')->default(0)->comment('nombre de sms a traiter');
+            $table->integer('nb_send_success')->default(0)->comment('nombre de sms envoyés avec succès');
+            $table->integer('nb_send_failed')->default(0)->comment('nombre de sms dont l envoie a échoué');
 
             $table->foreignId('smscampaign_status_id')->nullable()
                 ->comment('Reference du statut')

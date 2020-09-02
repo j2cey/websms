@@ -4,11 +4,9 @@ namespace App\Console\Commands;
 
 use App\SmscampaignFile;
 use Illuminate\Console\Command;
-use App\Traits\SmscampaignTrait;
 
 class SmscampaignImportfiles extends Command
 {
-    use SmscampaignTrait;
     /**
      * The name and signature of the console command.
      *
@@ -40,17 +38,17 @@ class SmscampaignImportfiles extends Command
      */
     public function handle()
     {
-        $file_to_import = SmscampaignFile::whereNull('imported_at')->first();
+        $file_to_import = SmscampaignFile::where('imported', 0)->first();
 
-        \Log::info("Cron en cours de traitement...");
+        \Log::info("smscampaign:importfiles en cours de traitement...");
 
         if ($file_to_import) {
-            $this->importFile($file_to_import);
-            $this->info('Commande smscampaign:importfiles execute avec succes! 1 fichier traité.');
+            $file_to_import->importToPlannig();
+            $this->info('smscampaign:importfiles execute avec succes! 1 fichier traité.');
         } else {
             $this->info('Aucun fichier a traiter.');
         }
-        \Log::info("Traitement termine.");
+        \Log::info("smscampaign:importfiles Traitement termine.");
         return 0;
     }
 }

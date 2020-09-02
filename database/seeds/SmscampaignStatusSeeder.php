@@ -14,13 +14,15 @@ class SmscampaignStatusSeeder extends Seeder
     {
         $this->createNew("0", "nouveau");
         $this->createNew("1", "attente importation fichier(s)");
-        $this->createNew("2", "succès importation fichier(s)");
-        $this->createNew("3", "fichier(s) importé(s) avec erreur(s)");
-        $this->createNew("4", "échec importation fichier(s)");
-        $this->createNew("5", "attente traitement");
-        $this->createNew("6", "succès traitement");
-        $this->createNew("7", "traitement effectué avec erreur(s)");
-        $this->createNew("8", "échec traitement");
+        $this->createNew("2", "importation fichier(s) en cours");
+        $this->createNew("3", "succès importation fichier(s)");
+        $this->createNew("4", "fichier(s) importé(s) avec erreur(s)");
+        $this->createNew("5", "échec importation fichier(s)");
+        $this->createNew("6", "attente traitement");
+        $this->createNew("7", "traitement en cours");
+        $this->createNew("8", "succès traitement");
+        $this->createNew("9", "traitement effectué avec erreur(s)");
+        $this->createNew("10", "échec traitement");
     }
 
     private function createNew($code, $title) {

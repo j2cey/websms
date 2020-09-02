@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 //use App\GTSMSC\SmssendableTrait;
-use App\Traits\Sms;
+use App\Traits\SmsSendTrait;
 
 /**
  * Class SmscampaignPlanningResult
@@ -30,7 +30,7 @@ use App\Traits\Sms;
 class SmscampaignPlanningResult extends Model
 {
     //use SmssendableTrait;
-    use Sms;
+    use SmsSendTrait;
     protected $guarded = [];
 
     public function planning() {

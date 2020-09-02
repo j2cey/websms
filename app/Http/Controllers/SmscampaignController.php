@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Smscampaign;
 use App\SmscampaignFile;
+use App\SmscampaignPlanning;
 use App\SmscampaignStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-use App\Traits\SmscampaignTrait;
+use App\Traits\SmsImportFileTrait;
 use Illuminate\Support\Facades\DB;
 
 class SmscampaignController extends Controller
 {
-    use SmscampaignTrait;
+    use SmsImportFileTrait;
     /**
      * Display a listing of the resource.
      *
@@ -118,6 +119,13 @@ class SmscampaignController extends Controller
             'smscampaign_type_id' => $formInput['smscampaign_type_id'],
         ]);
 
+        // Nouveau planning (en attente importation fichiers)
+        $new_planning = new SmscampaignPlanning();
+        $new_planning->plan_at = Carbon::now(); // TODO: récupérer la date de planification
+        $new_planning->smscampaign_id = $new_smscampaign->id;
+        $new_planning->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
+        $new_planning->stat_all = 0;
+
         //loop through file and split every 1000 lines
         $parts = (array_chunk($data, 500));
         $i = 1;
@@ -129,8 +137,9 @@ class SmscampaignController extends Controller
 
             $new_file = SmscampaignFile::create([
                 'name' => $filename,
-                'smscampaign_id' => $new_smscampaign->id,
-                'import_report' => json_encode([""]),
+                'smscampaign_planning_id' => $new_planning->id,
+                'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
+                'import_report' => json_encode([]),
             ]);
 
             file_put_contents($filename_full, $line);
