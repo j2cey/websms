@@ -17,17 +17,21 @@
         <span class="badge badge-default">
     @elseif($currval->status->code == 1) <!--attente importation fichier(s)-->
         <span class="badge badge-primary">
-    @elseif($currval->status->code == 2) <!--succès importation fichier(s)-->
+    @elseif($currval->status->code == 2) <!--importation fichier(s) en cours-->
+        <span class="badge badge-info">
+    @elseif($currval->status->code == 3) <!--succès importation fichier(s)-->
         <span class="badge badge-success">
-    @elseif($currval->status->code == 3) <!--fichier(s) importé(s) avec erreur(s)-->
+    @elseif($currval->status->code == 4) <!--fichier(s) importé(s) avec erreur(s)-->
         <span class="badge badge-warning">
-    @elseif($currval->status->code == 4) <!--échec importation fichier(s)-->
+    @elseif($currval->status->code == 5) <!--échec importation fichier(s)-->
         <span class="badge badge-danger">
-    @elseif($currval->status->code == 5) <!--attente traitement-->
+    @elseif($currval->status->code == 6) <!--attente traitement-->
         <span class="badge badge-primary">
-    @elseif($currval->status->code == 6) <!--succès traitement-->
+    @elseif($currval->status->code == 7) <!--traitement en cours-->
+        <span class="badge badge-info">
+    @elseif($currval->status->code == 8) <!--succès traitement-->
         <span class="badge badge-success">
-    @elseif($currval->status->code == 7) <!--traitement effectué avec erreur(s)-->
+    @elseif($currval->status->code == 9) <!--traitement effectué avec erreur(s)-->
         <span class="badge badge-warning">
     @else <!--échec traitement-->
         <span class="badge badge-danger">
