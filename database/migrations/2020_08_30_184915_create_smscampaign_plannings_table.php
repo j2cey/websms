@@ -20,7 +20,7 @@ class CreateSmscampaignPlanningsTable extends Migration
                 ->comment('reference de la campagne')
                 ->constrained()->onDelete('set null');
 
-            $table->boolean('current')->nullable(true)->comment('détermine si cette planification fait partie des planification en cours ou dernierement traitées');
+            $table->boolean('current')->nullable(1)->comment('détermine si cette planification fait partie des planification en cours ou dernierement traitées');
 
             $table->timestamp('plan_at')->nullable()->comment('date planifie du traitement');
             $table->timestamp('plandone_at')->nullable()->comment('date effective de la planification du traitement');
@@ -35,7 +35,7 @@ class CreateSmscampaignPlanningsTable extends Migration
             $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi ');
             $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi ');
 
-            $table->integer('stat_all')->default(0)->comment('nombre total des traitements à effectuer');
+            $table->integer('stat_all')->default(0)->comment('nombre total de traitements à effectuer');
             $table->integer('stat_sending')->default(0)->comment('nombre de traitement en cours');
             $table->integer('stat_success')->default(0)->comment('nombre de succès');
             $table->integer('stat_failed')->default(0)->comment('nombre d\' échecs');

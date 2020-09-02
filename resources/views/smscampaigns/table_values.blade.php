@@ -38,3 +38,5 @@
     @endif <!--le titre-->
         {{ $currval->status->titre }}</span>
 </td>
+<td>{{ $currval->nb_import_success }} / {{ $currval->nb_to_import }}</td>
+<td>{{ $currval->nb_send_success }} / {{ $currval->nb_to_send }}</td>

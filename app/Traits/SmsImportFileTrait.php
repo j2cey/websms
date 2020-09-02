@@ -25,7 +25,10 @@ trait SmsImportFileTrait
         //$this->nb_rows_failed = 0;
 
         $row_current = 1;
-        foreach ($rows as $row) {
+        //foreach ($rows as $row) {
+        for ($i = 0; $i < $this->nb_rows; $i++) {
+            $row_current = $i + 1;
+            $row = $rows[$i];
             if ($row_current > $this->row_last_processed) {
                 $receiver = new SmscampaignReceiver();
                 $msg = "";
@@ -58,25 +61,27 @@ trait SmsImportFileTrait
                 $campaign->setStatus();
 
                 // Next Row
-                $row_current += 1;
+                //$row_current += 1;
             }
         }
     }
 
-    private function parseMsg($row_current, $msg_in, &$msg_out) {
+    private function parseMsg($msg_in, &$msg_out, &$report_msg) {
         $parse_result = false;
         if (empty($msg_in)) {
             $msg_out = $msg_in;
-            $this->addToReport($row_current,"le message de SMS est vide");
+            //$this->addToReport($row_current,"le message de SMS est vide");
+            $report_msg = "le message de SMS est vide";
         } else {
             $msg_out = $msg_in;
             $parse_result = true;
-            $this->addToReport($row_current,"message recupere avec succes");
+            //$this->addToReport($row_current,"message recupere avec succes");
+            $report_msg = "message recupere avec succes";
         }
         return $parse_result;
     }
 
-    private function parseMobile($row_current, $mobile, &$receiver) {
+    private function parseMobile($mobile, &$receiver, &$report_msg) {
         $mobile_local = substr($mobile, -8);
         $parse_result = false;
         if (is_numeric($mobile_local)) {
@@ -84,11 +89,12 @@ trait SmsImportFileTrait
                 'mobile' => $mobile,
             ]);
             $parse_result = true;
-            $this->addToReport($row_current,"numeros recupere avec succes");
+            //$this->addToReport($row_current,"numeros recupere avec succes");
+            $report_msg = "numeros recupere avec succes";
         } else {
             $receiver = null;
-            //$report = $this->addToReport($report, "le numero " . $mobile . "n est pas valide");
-            $this->addToReport($row_current,"le numero " . $mobile . "n est pas valide");
+            //$this->addToReport($row_current,"le numero " . $mobile . "n est pas valide");
+            $report_msg = "le numero " . $mobile . " n'est pas valide";
         }
         return $parse_result;
     }
@@ -97,43 +103,49 @@ trait SmsImportFileTrait
         $receiver = new SmscampaignReceiver();
         $parameters_ok = false;
 
+        $report_msg = "";
         if ($campaign->type->code == "1") {
             // Messages individuels
             if (strpos($row, $campaign->separateur_colonnes) === false) {
                 $this->addToReport($row_current, "Separateur de colonnes non trouve!");
             } else {
                 $row_tab = explode($campaign->separateur_colonnes, $row);
-                $parameters_ok = $this->parseMobile($row_current, $row_tab[0], $receiver);
+                $parameters_ok = $this->parseMobile($row_tab[0], $receiver, $report_msg);
                 if ($parameters_ok) {
-                    $parameters_ok = $this->parseMsg($row_current, $row_tab[1], $msg);
+                    $parameters_ok = $this->parseMsg($row_tab[1], $msg, $report_msg);
                 }
             }
         } else {
             // Message commun OU Campagne Mixte
             if (strpos($row, $campaign->separateur_colonnes) === false) {
-                $parameters_ok = $this->parseMobile($row_current, $row, $receiver);
+                $parameters_ok = $this->parseMobile($row, $receiver,$report_msg);
                 if ($parameters_ok) {
-                    $parameters_ok = $this->parseMsg($row_current, $campaign->message, $msg);
+                    $parameters_ok = $this->parseMsg($campaign->message, $msg,$report_msg);
                 }
             } else {
                 $row_tab = explode($campaign->separateur_colonnes, $row);
-                $parameters_ok = $this->parseMobile($row_current, $row_tab[0], $receiver);
+                $parameters_ok = $this->parseMobile($row_tab[0], $receiver,$report_msg);
 
                 if ($parameters_ok) {
                     if ($campaign->type->code == "0") {
                         // Message commun
-                        $parameters_ok = $this->parseMsg($row_current, $campaign->message, $msg);
+                        $parameters_ok = $this->parseMsg($campaign->message, $msg,$report_msg);
                     } else {
                         // Campagne Mixte
-                        $parameters_ok = $this->parseMsg($row_current, $row_tab[1], $msg);
+                        $parameters_ok = $this->parseMsg($row_tab[1], $msg,$report_msg);
                         if (!$parameters_ok) {
                             // si le message dans le fichier est empty, on essaie de passer le message de la campagne (commun)
-                            $parameters_ok = $this->parseMsg($row_current, $campaign->message, $msg);
+                            $parameters_ok = $this->parseMsg($campaign->message, $msg,$report_msg);
                         }
                     }
                 }
             }
         }
+
+        if ($parameters_ok) {
+            $report_msg = "succès importation";
+        }
+        $this->addToReport($row_current,$report_msg);
         return $parameters_ok;
     }
 

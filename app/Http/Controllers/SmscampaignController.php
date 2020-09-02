@@ -135,6 +135,7 @@ class SmscampaignController extends Controller
             'smscampaign_id' => $new_smscampaign->id,
             'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
             'stat_all' => 0,
+            'current' => true,
         ]);
 
         //loop through file and split every 1000 lines
