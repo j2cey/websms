@@ -41,8 +41,8 @@ class SmscampaignSend extends Command
      */
     public function handle()
     {
-        $max_to_send = 30;
-        $planningresult_lines = SmscampaignPlanningResult::where('stat_done', 0)->take($max_to_send)->get();
+        $max_to_send = 45;
+        $planningresult_lines = SmscampaignPlanningResult::where('send_processed', 0)->take($max_to_send)->get();
 
         \Log::info("Cron en cours de traitement...");
 
@@ -56,6 +56,12 @@ class SmscampaignSend extends Command
 
             $planningresult_line->sendSms();
             $nb_done = $nb_done + 1;
+        }
+
+        if ($nb_done > 0) {
+            $this->info('smscampaign:send execute avec succes! '.$nb_done.' élément(s) traité(s).');
+        } else {
+            $this->info('smscampaign:send execute avec succes! Aucun élément traité.');
         }
 
         \Log::info("Traitement termine.");

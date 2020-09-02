@@ -33,8 +33,8 @@ class CreateSmscampaignFilesTable extends Migration
             $table->integer('row_last_processed')->default(0)->comment('derniere ligne traitée');
             $table->json('report')->comment('rapport d importation');
 
-            $table->foreignId('smscampaign_status_id')->nullable()
-                ->comment('Reference du statut')
+            $table->foreignId('smsimport_status_id')->nullable()
+                ->comment('Reference du statut d\'importation')
                 ->constrained()->onDelete('set null');
 
             $table->timestamps();
@@ -50,7 +50,7 @@ class CreateSmscampaignFilesTable extends Migration
     {
         Schema::table('smscampaign_files', function (Blueprint $table) {
             $table->dropForeign(['smscampaign_planning_id']);
-            $table->dropForeign(['smscampaign_status_id']);
+            $table->dropForeign(['smsimport_status_id']);
         });
         Schema::dropIfExists('smscampaign_files');
     }

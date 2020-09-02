@@ -2,10 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\SmscampaignStatus;
+use App\SmsimportStatus;
 use Faker\Generator as Faker;
 
-$factory->define(SmscampaignStatus::class, function (Faker $faker) {
+$factory->define(SmsimportStatus::class, function (Faker $faker) {
     return [
         //
     ];

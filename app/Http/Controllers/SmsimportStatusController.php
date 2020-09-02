@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\SmscampaignStatus;
+use App\SmsimportStatus;
 use Illuminate\Http\Request;
 
-class SmscampaignStatusController extends Controller
+class SmsimportStatusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class SmscampaignStatusController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\SmscampaignStatus  $smscampaignStatus
+     * @param  \App\SmsimportStatus  $smsimportStatus
      * @return \Illuminate\Http\Response
      */
-    public function show(SmscampaignStatus $smscampaignStatus)
+    public function show(SmsimportStatus $smsimportStatus)
     {
         //
     }
@@ -52,10 +52,10 @@ class SmscampaignStatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\SmscampaignStatus  $smscampaignStatus
+     * @param  \App\SmsimportStatus  $smsimportStatus
      * @return \Illuminate\Http\Response
      */
-    public function edit(SmscampaignStatus $smscampaignStatus)
+    public function edit(SmsimportStatus $smsimportStatus)
     {
         //
     }
@@ -64,10 +64,10 @@ class SmscampaignStatusController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SmscampaignStatus  $smscampaignStatus
+     * @param  \App\SmsimportStatus  $smsimportStatus
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SmscampaignStatus $smscampaignStatus)
+    public function update(Request $request, SmsimportStatus $smsimportStatus)
     {
         //
     }
@@ -75,18 +75,18 @@ class SmscampaignStatusController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\SmscampaignStatus  $smscampaignStatus
+     * @param  \App\SmsimportStatus  $smsimportStatus
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SmscampaignStatus $smscampaignStatus)
+    public function destroy(SmsimportStatus $smsimportStatus)
     {
         //
     }
 
-    public function selectmorecampaignstatuses(Request $request)
+    public function selectmoreimportstatuses(Request $request)
     {
         $search = $request->get('search');
-        $data = SmscampaignStatus::select(['id', 'titre'])
+        $data = SmsimportStatus::select(['id', 'titre'])
             ->where('titre', 'like', '%' . $search . '%')->orderBy('titre')->paginate(5);
         return response()->json(['items' => $data->toArray()['data'], 'pagination' => $data->nextPageUrl() ? true : false]);
     }

@@ -35,14 +35,18 @@ class CreateSmscampaignPlanningsTable extends Migration
             $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi ');
             $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi ');
 
-            $table->integer('stat_all')->default(0)->comment('nombre total de traitements à effectuer');
-            $table->integer('stat_sending')->default(0)->comment('nombre de traitement en cours');
-            $table->integer('stat_success')->default(0)->comment('nombre de succès');
-            $table->integer('stat_failed')->default(0)->comment('nombre d\' échecs');
-            $table->integer('stat_done')->default(0)->comment('nombre de traitement effectués');
+            $table->integer('nb_to_send')->default(0)->comment('nombre de sms a traiter');
+            $table->integer('nb_send_processing')->default(false)->comment('nombre d\'envoi en cours');
+            $table->integer('nb_send_success')->default(0)->comment('nombre de sms envoyés avec succès');
+            $table->integer('nb_send_failed')->default(0)->comment('nombre de sms dont l envoie a échoué');
+            $table->integer('nb_send_processed')->default(0)->comment('nombre de traitement(s) effectué(s)');
 
-            $table->foreignId('smscampaign_status_id')->nullable()
-                ->comment('Reference Statut')
+            $table->foreignId('smsimport_status_id')->nullable()
+                ->comment('Reference du statut d\'importation')
+                ->constrained()->onDelete('set null');
+
+            $table->foreignId('smssend_status_id')->nullable()
+                ->comment('Reference du statut de l\'envoie')
                 ->constrained()->onDelete('set null');
 
             $table->timestamps();
@@ -57,8 +61,9 @@ class CreateSmscampaignPlanningsTable extends Migration
     public function down()
     {
         Schema::table('smscampaign_plannings', function (Blueprint $table) {
+            $table->dropForeign(['smsimport_status_id']);
+            $table->dropForeign(['smssend_status_id']);
             $table->dropForeign(['smscampaign_id']);
-            $table->dropForeign(['smscampaign_status_id']);
         });
         Schema::dropIfExists('smscampaign_plannings');
     }

@@ -10,9 +10,22 @@
 
             <div class="col-4">
 
-                <select class="form-control" name="campstatus[]" id="campaignstatus" multiple="multiple">
-                    @if(isset($campstatus))
-                        @forelse ($campstatus as $id => $display)
+                <select class="form-control" name="importstatus[]" id="importstatus" multiple="multiple">
+                    @if(isset($importstatus))
+                        @forelse ($importstatus as $id => $display)
+                            <option value="{{ $id }}" selected>{{ $display }}</option>
+                        @empty
+                        @endforelse
+                    @endif
+                </select>
+
+            </div>
+
+            <div class="col-4">
+
+                <select class="form-control" name="sendstatus[]" id="sendstatus" multiple="multiple">
+                    @if(isset($sendstatus))
+                        @forelse ($sendstatus as $id => $display)
                             <option value="{{ $id }}" selected>{{ $display }}</option>
                         @empty
                         @endforelse

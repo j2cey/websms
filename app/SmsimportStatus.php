@@ -5,18 +5,19 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class SmscampaignStatus
+ * Class SmsimportStatus
  * @package App
  *
  * @property integer $id
  *
  * @property string $titre
  * @property integer $code
+ * @property integer $description
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
-class SmscampaignStatus extends Model
+class SmsimportStatus extends Model
 {
     protected $guarded = [];
 

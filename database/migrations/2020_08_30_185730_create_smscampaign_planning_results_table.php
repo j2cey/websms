@@ -28,13 +28,9 @@ class CreateSmscampaignPlanningResultsTable extends Migration
 
             $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi ');
             $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi ');
-            $table->boolean('stat_sending')->default(false)->comment('determine si l\'envoi est en cours');
-            $table->boolean('stat_success')->default(false)->comment('determine si l\'envoi est un succès');
-
-            $table->boolean('stat_failed')->default(false)->comment('determine si l\'envoi est un échec');
-            $table->string('stat_failed_msg')->nullable()->comment('message d\'erreur');
-
-            $table->boolean('stat_done')->default(false)->comment('determine si l\'envoi est effectif');
+            $table->boolean('send_processing')->default(false)->comment('determine si l\'envoi est en cours');
+            $table->boolean('send_success')->default(false)->comment('determine si l\'envoi est un succès');
+            $table->boolean('send_processed')->default(false)->comment('determine si l\'envoi a été traité');
             $table->json('report')->comment('rapport de traitement');
 
             $table->timestamps();

@@ -26,5 +26,8 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('smscampaigns','SmscampaignController')->middleware('auth');
-Route::get('/selectmorecampaignstatuses', 'SmscampaignStatusController@selectmorecampaignstatuses')->middleware('auth');
+
+Route::get('/selectmoreimportstatuses', 'SmsimportStatusController@selectmoreimportstatuses')->middleware('auth');
+Route::get('/selectmoresendstatuses', 'SmssendStatusController@selectmoresendstatuses')->middleware('auth');
+
 Route::get('/importcampaignfiles','SmscampaignController@importcampaignfiles')->middleware('auth');

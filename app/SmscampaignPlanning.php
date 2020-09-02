@@ -3,7 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use App\Traits\ImportStatusTrait;
+use App\Traits\SendStatusTrait;
 
 /**
  * Class SmscampaignPlanning
@@ -24,11 +25,11 @@ use Illuminate\Support\Facades\DB;
  *
  * @property \Illuminate\Support\Carbon $sendingstart_at
  * @property \Illuminate\Support\Carbon $sendingend_at
- * @property integer $stat_all
- * @property integer $stat_sending
- * @property integer $stat_success
- * @property integer $stat_failed
- * @property integer $stat_done
+ * @property integer $nb_to_send
+ * @property integer $nb_send_processing
+ * @property integer $nb_send_success
+ * @property integer $nb_send_failed
+ * @property integer $nb_send_processed
  *
  * @property integer|null $smscampaign_id
  * @property integer|null $smscampaign_status_id
@@ -38,6 +39,9 @@ use Illuminate\Support\Facades\DB;
  */
 class SmscampaignPlanning extends Model
 {
+    use ImportStatusTrait;
+    use SendStatusTrait;
+
     protected $guarded = [];
 
     public function campaign() {
@@ -53,95 +57,19 @@ class SmscampaignPlanning extends Model
     }
 
     public function setStatus($save = true) {
-
         $this->nb_to_import = $this->files()->sum('nb_rows');
         $this->nb_import_success = $this->files()->sum('nb_rows_imported');
         $this->nb_import_failed = $this->files()->sum('nb_rows_failed');
 
-        if ($this->nb_to_import == $this->nb_import_failed) {
-            // échec importation fichier(s)
-            $this->smscampaign_status_id = SmscampaignStatus::coded("5")->first()->id;
-            $this->setImportEnd(false);
-        } elseif ($this->nb_to_import == ($this->nb_import_success + $this->nb_import_failed)) {
+        $this->setImportStatus('smscampaign_files','smscampaign_planning_id',$save);
 
-            $this->setImportEnd(false);
+        $this->nb_to_send = $this->results()->count();
+        $this->nb_send_success = $this->results()->where('send_success', 1)->count();
+        $this->nb_send_failed = $this->results()->where('send_success', 0)->count();
+        $this->nb_send_processing = $this->results()->where('send_processing', 1)->count();
+        $this->nb_send_processed = $this->results()->where('send_processed', 1)->count();
 
-            $this->stat_all = $this->results()->count();
-            $this->stat_success = $this->results()->where('stat_success', 1)->count();
-            $this->stat_failed = $this->results()->where('stat_failed', 1)->count();
-            $this->stat_done = $this->results()->where('stat_done', 1)->count();
-
-            if ($this->stat_all == $this->stat_done) {
-                // Traitement terminé
-                if ($this->stat_all == $this->stat_failed) {
-                    // échec traitement
-                    $this->smscampaign_status_id = SmscampaignStatus::coded("10")->first()->id;
-                } elseif ($this->stat_failed > 0) {
-                    // traitement effectué avec erreur(s)
-                    $this->smscampaign_status_id = SmscampaignStatus::coded("9")->first()->id;
-                } else {
-                    // succès traitement
-                    $this->smscampaign_status_id = SmscampaignStatus::coded("8")->first()->id;
-                }
-                // Set End Date
-                $this->setSendingEnd(false);
-            } elseif ($this->stat_done > 0) {
-                // traitement en cours
-                $this->smscampaign_status_id = SmscampaignStatus::coded("7")->first()->id;
-                // Set Start Date
-                $this->setSendingStart(false);
-            } else {
-                // attente traitement
-                $this->smscampaign_status_id = SmscampaignStatus::coded("6")->first()->id;
-            }
-        } elseif (($this->nb_import_success + $this->nb_import_failed) > 0) {
-            // importation fichier(s) en cours
-            $this->smscampaign_status_id = SmscampaignStatus::coded("2")->first()->id;
-            $this->setImportStart(false);
-        } else {
-            // attente importation fichier(s)
-            $this->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
-        }
-
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    public function setImportEnd($save = true) {
-        if (!$this->importend_at) {
-            $last_date = DB::table('smscampaign_files')->where('smscampaign_planning_id', $this->id)->max('importend_at');
-            $this->importend_at = $last_date;
-        }
-
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    public function setImportStart($save = true) {
-        if (!$this->importstart_at) {
-            $first_date = DB::table('smscampaign_files')->where('smscampaign_planning_id', $this->id)->min('importstart_at');
-            $this->importstart_at = $first_date;
-        }
-    }
-
-    public function setSendingEnd($save = true) {
-        if (!$this->sendingend_at) {
-            $last_date = DB::table('smscampaign_planning_results')->where('smscampaign_planning_id', $this->id)->max('sendingend_at');
-            $this->sendingend_at = $last_date;
-        }
-
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    public function setSendingStart($save = true) {
-        if (!$this->sendingstart_at) {
-            $first_date = DB::table('smscampaign_planning_results')->where('smscampaign_planning_id', $this->id)->min('sendingstart_at');
-            $this->sendingstart_at = $first_date;
-        }
+        $this->setSendStatus('smscampaign_planning_results','smscampaign_planning_id',$save);
     }
 
     public static function boot(){

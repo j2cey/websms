@@ -35,7 +35,7 @@ trait SmsImportFileTrait
 
                 if ($row_parse_ok) {
                     // incrément des lignes a traiter dans la planning
-                    $planning->stat_all += 1;
+                    $planning->nb_to_import += 1;
                     // New planning result
                     $planning_result = SmscampaignPlanningResult::create([
                         'message' => $msg,

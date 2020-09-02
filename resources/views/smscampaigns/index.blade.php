@@ -5,7 +5,7 @@
 @endsection
 
 @section('css')
-    @include('smscampaigns.campaignstatus_css')
+    @include('smscampaigns.importstatus_css')
 @endsection
 
 @section('content')
@@ -71,5 +71,6 @@
 @endsection
 
 @section('js')
-    @include('smscampaigns.campaignstatus_js')
+    @include('smscampaigns.importstatus_js')
+    @include('smscampaigns.sendstatus_js')
 @endsection

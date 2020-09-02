@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Smscampaign;
 use App\SmscampaignFile;
 use App\SmscampaignPlanning;
-use App\SmscampaignStatus;
+use App\SmsimportStatus;
+use App\SmssendStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -42,7 +43,8 @@ class SmscampaignController extends Controller
         $descript = null;
         $dt_deb = null;
         $dt_fin = null;
-        $campstatus = null;
+        $importstatus = null;
+        $sendstatus = null;
 
         //if ($request->has('orderBy')) $orderBy = $request->query('orderBy');
         //if ($request->has('sortBy')) $sortBy = $request->query('sortBy');
@@ -56,17 +58,23 @@ class SmscampaignController extends Controller
         if ($request->has('dt_fin')) $dt_fin = $request->query('dt_fin');
 
         //dd($request, $seltypds,$dt_deb,$dt_fin);
-        $listvalues = Smscampaign::search($title,$sendername,$campstatus,$descript,$dt_deb,$dt_fin)
-            ->with('status')
+        $listvalues = Smscampaign::search($title,$sendername,$importstatus,$sendstatus,$descript,$dt_deb,$dt_fin)
+            ->with('importstatus')->with('sendstatus')
             ->orderBy('id','desc')->paginate($perPage);
 
-        if (is_null($campstatus)) {
-            $campstatus = SmscampaignStatus::where('titre', 'x@gsf sgfscfs')->pluck('titre', 'id');
+        if (is_null($importstatus)) {
+            $importstatus = SmsimportStatus::where('titre', 'x@gsf sgfscfs')->pluck('titre', 'id');
         } else {
-            $campstatus = SmscampaignStatus::whereIn('id', $campstatus)->pluck('titre', 'id');
+            $importstatus = SmsimportStatus::whereIn('id', $importstatus)->pluck('titre', 'id');
         }
 
-        return view('smscampaigns.index', compact('title', 'sendername', 'campstatus', 'descript', 'dt_deb', 'dt_fin', 'listvalues', 'perPage'));
+        if (is_null($sendstatus)) {
+            $sendstatus = SmssendStatus::where('titre', 'x@gsf sgfscfs')->pluck('titre', 'id');
+        } else {
+            $sendstatus = SmssendStatus::whereIn('id', $sendstatus)->pluck('titre', 'id');
+        }
+
+        return view('smscampaigns.index', compact('title', 'sendername', 'importstatus', 'sendstatus', 'descript', 'dt_deb', 'dt_fin', 'listvalues', 'perPage'));
     }
 
     /**
@@ -95,6 +103,8 @@ class SmscampaignController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
+
         request()->validate([
             'fichier_destinataires' => 'required|mimes:csv,txt',
             'titre' => 'required',
@@ -124,16 +134,18 @@ class SmscampaignController extends Controller
             'message' => $formInput['message'],
             'description' => $formInput['description'],
             'separateur_colonnes' => $formInput['separateur_colonnes'],
-            'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
+            'smsimport_status_id' => SmsimportStatus::coded("1")->first()->id,
+            'smssend_status_id' => SmssendStatus::coded("1")->first()->id,
             'smscampaign_type_id' => $formInput['smscampaign_type_id'],
+            'user_id' => $user->id,
         ]);
 
         // Nouveau planning (en attente importation fichiers)
         $new_planning = SmscampaignPlanning::create([
             'plan_at' => Carbon::now(), // TODO: récupérer la date de planification
             'smscampaign_id' => $new_smscampaign->id,
-            'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
-            'stat_all' => 0,
+            'smsimport_status_id' => SmsimportStatus::coded("1")->first()->id,
+            'smssend_status_id' => SmssendStatus::coded("1")->first()->id,
             'current' => true,
         ]);
 
@@ -156,7 +168,7 @@ class SmscampaignController extends Controller
                 'name' => $filename,
                 'smscampaign_planning_id' => $new_planning->id,
                 'nb_rows' => $nb_rows,
-                'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
+                'smsimport_status_id' => SmsimportStatus::coded("1")->first()->id,
                 'report' => json_encode([]),
             ]);
         }

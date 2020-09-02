@@ -1,9 +1,9 @@
 <script src="{{ asset('assets/js/select2.min.js') }}"></script>
 <script>
     $(document).ready(function () {
-        $('#campaignstatus').select2({
+        $('#sendstatus').select2({
             ajax: {
-                url: '{{'/selectmorecampaignstatuses'}}',
+                url: '{{'/selectmoresendstatuses'}}',
                 data: function (params) {
                     return {
                         search: params.term,
@@ -28,7 +28,7 @@
                 cache: true,
                 delay: 250
             },
-            placeholder: 'Statut Campagne',
+            placeholder: 'Statut Envoi',
 //                minimumInputLength: 2,
             multiple: true
         });

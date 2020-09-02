@@ -4,9 +4,6 @@
 namespace App\Traits;
 
 
-use App\Smscampaign;
-use App\SmscampaignPlanning;
-use App\SmscampaignReceiver;
 use App\Traits\SMS\protocol\SmppClient;
 use App\Traits\SMS\protocol\GsmEncoder;
 use App\Traits\SMS\protocol\SmppAddress;
@@ -19,10 +16,11 @@ use Exception;
 
 trait SmsSendTrait
 {
+    use ReportableTrait;
     public function sendSms() {
-        $receiver = SmscampaignReceiver::where('id',$this->smscampaign_receiver_id)->first();
-        $planning = SmscampaignPlanning::where('id',$this->smscampaign_planning_id)->first();
-        $campaign = Smscampaign::where('id',$planning->smscampaign_id)->first();
+        $receiver = $this->receiver;
+        $planning = $this->planning;
+        $campaign = $planning->campaign;
 
         // Start
         $this->sendingstart_at = Carbon::now();
@@ -37,6 +35,31 @@ trait SmsSendTrait
         $mobile_local = substr($to_rqst, -8);
         $mobile_inter = $indicatif.$mobile_local;
 
+        $this->send_processing = true;
+        $this->save();
+
+        $report_msg = "";
+        //$send_ok = $this->rawSend($from_rqst,$msg,$mobile_inter,$report_msg);
+        $send_ok = $this->rawSendTest($from_rqst,$msg,$mobile_inter,$report_msg);
+
+        $this->send_processing = false;
+        $this->save();
+
+        if ($send_ok) {
+            $this->send_success = true;
+            $this->addToReport(0,"Succès Envoie");
+        } else {
+            $this->send_success = false;
+            $this->addToReport(0, $report_msg);
+        }
+
+        $this->send_processed = true;
+        $this->sendingend_at = Carbon::now();
+        $this->save();
+    }
+
+    private function rawSend($from_rqst,$msg,$mobile_inter,&$report_msg) {
+        $send_ok = false;
         try {
             // Construct transport and client, customize settings
             $transport = new TSocket(config('app.SMPP_HOST'),2775,false,[$this, 'printDebug']); // hostname/ip (ie. localhost) and port (ie. 2775)
@@ -67,8 +90,8 @@ trait SmsSendTrait
             // Send
             $smpp->sendSMS($from,$to,$encodedMessage);
 
-            $this->stat_failed = false;
-            $this->stat_success = true;
+            /*$this->stat_failed = false;
+            $this->stat_success = true;*/
 
             // Close connection
             $smpp->close();
@@ -78,27 +101,34 @@ trait SmsSendTrait
             $this->stat_failed = true;
             try {
                 $smpp->close();
-                $this->stat_failed_msg = $e->getMessage();
-                $this->save();
+                $report_msg = $e->getMessage();
+                //$this->save();
             } catch (Exception $ue) {
                 // if that fails just close the transport
                 $this->printDebug("Failed to unbind; '".$ue->getMessage()."' closing transport");
-                $this->stat_failed_msg = $ue->getMessage();
+                $report_msg = $ue->getMessage();
                 if ($transport->isOpen()) $transport->close();
-                $this->save();
+                //$this->save();
             }
-            $this->save();
+            //$this->save();
             // Rethrow exception, now we are unbound or transport is closed
             //CustomLog::logEnd($logfile, $starttime_gbl, $e->getMessage());
             throw $e;
         }
 
-        // Start
-        $this->sendingend_at = Carbon::now();
-        $this->stat_done = true;
-        $this->save();
+        return $send_ok;
+    }
 
-        $planning->setStatus();
-        $campaign->setStatus();
+    private function rawSendTest($from_rqst,$msg,$mobile_inter,&$report_msg) {
+        $results = [
+            [true,"Succès Envoie"],
+            [false, "Time Out"],
+            [true, "Succès Envoie"],
+            [false, "SMSC server unreachable"],
+        ];
+        sleep(0.5);
+        $rst = rand(0, 3);
+        $report_msg = $results[$rst][1];
+        return $results[$rst][0];
     }
 }

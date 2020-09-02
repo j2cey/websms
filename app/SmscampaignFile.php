@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
  * @property \Illuminate\Support\Carbon $importend_at
  *
  * @property integer|null $smscampaign_planning_id
- * @property integer|null $smscampaign_status_id
+ * @property integer|null $smsimport_status_id
  *
  * @property integer $nb_rows
  * @property integer $nb_rows_imported
@@ -45,8 +45,8 @@ class SmscampaignFile extends Model
         return $this->belongsTo('App\SmscampaignPlanning', 'smscampaign_planning_id');
     }
 
-    public function status() {
-        return $this->belongsTo('App\SmscampaignStatus', 'smscampaign_status_id');
+    public function importstatus() {
+        return $this->belongsTo('App\SmsimportStatus', 'smsimport_status_id');
     }
 
     public function setStatus($save = true) {
@@ -57,24 +57,24 @@ class SmscampaignFile extends Model
             // Importation terminé
             if ($this->nb_rows == $this->nb_rows_failed) {
                 // échec importation fichier(s)
-                $this->smscampaign_status_id = SmscampaignStatus::coded("5")->first()->id;
+                $this->smsimport_status_id = SmsimportStatus::coded("5")->first()->id;
             } elseif ($this->nb_rows_failed > 0) {
                 // fichier(s) importé(s) avec erreur(s)
-                $this->smscampaign_status_id = SmscampaignStatus::coded("4")->first()->id;
+                $this->smsimport_status_id = SmsimportStatus::coded("4")->first()->id;
             } else {
                 // succès importation fichier(s)
-                $this->smscampaign_status_id = SmscampaignStatus::coded("3")->first()->id;
+                $this->smsimport_status_id = SmsimportStatus::coded("3")->first()->id;
             }
             // Set End Date
             $this->setEnd(false);
         } elseif (($this->nb_rows_imported + $this->nb_rows_failed) > 0) {
             // importation fichier(s) en cours
-            $this->smscampaign_status_id = SmscampaignStatus::coded("2")->first()->id;
+            $this->smsimport_status_id = SmsimportStatus::coded("2")->first()->id;
             // Set Start Date
             $this->setStart(false);
         } else {
             // attente traitement
-            $this->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
+            $this->smsimport_status_id = SmsimportStatus::coded("1")->first()->id;
         }
 
         if ($save) {

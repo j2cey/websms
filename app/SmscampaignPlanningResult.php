@@ -15,11 +15,9 @@ use App\Traits\SmsSendTrait;
  * @property string $message
  * @property \Illuminate\Support\Carbon $sendingstart_at
  * @property \Illuminate\Support\Carbon $sendingend_at
- * @property boolean $stat_sending
- * @property boolean $stat_success
- * @property boolean $stat_failed
- * @property string $stat_failed_msg
- * @property boolean $stat_done
+ * @property boolean $send_processing
+ * @property boolean $send_success
+ * @property boolean $send_processed
  *
  * @property integer|null $smscampaign_planning_id
  * @property integer|null $smscampaign_receiver_id
@@ -31,7 +29,6 @@ use App\Traits\SmsSendTrait;
  */
 class SmscampaignPlanningResult extends Model
 {
-    //use SmssendableTrait;
     use SmsSendTrait;
     protected $guarded = [];
     protected $casts = [
@@ -39,11 +36,11 @@ class SmscampaignPlanningResult extends Model
     ];
 
     public function planning() {
-        return $this->belongsTo('App\SmscampaignPlanning');
+        return $this->belongsTo('App\SmscampaignPlanning','smscampaign_planning_id');
     }
 
     public function receiver() {
-        return $this->belongsTo('App\SmscampaignPlanningReceiver');
+        return $this->belongsTo('App\SmscampaignReceiver','smscampaign_receiver_id');
     }
 
     // Simple debug callback
