@@ -31,7 +31,7 @@ class CreateSmscampaignFilesTable extends Migration
             $table->integer('nb_rows_failed')->default(0)->comment('nombre total de lignes echouees');
 
             $table->integer('row_last_processed')->default(0)->comment('derniere ligne traitée');
-            $table->json('import_report')->comment('rapport d importation');
+            $table->json('report')->comment('rapport d importation');
 
             $table->foreignId('smscampaign_status_id')->nullable()
                 ->comment('Reference du statut')

@@ -24,6 +24,8 @@ use App\Traits\SmsSendTrait;
  * @property integer|null $smscampaign_planning_id
  * @property integer|null $smscampaign_receiver_id
  *
+ * @property string $report
+ *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
@@ -32,6 +34,9 @@ class SmscampaignPlanningResult extends Model
     //use SmssendableTrait;
     use SmsSendTrait;
     protected $guarded = [];
+    protected $casts = [
+        'report' => 'array'
+    ];
 
     public function planning() {
         return $this->belongsTo('App\SmscampaignPlanning');

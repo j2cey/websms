@@ -35,6 +35,7 @@ class CreateSmscampaignPlanningResultsTable extends Migration
             $table->string('stat_failed_msg')->nullable()->comment('message d\'erreur');
 
             $table->boolean('stat_done')->default(false)->comment('determine si l\'envoi est effectif');
+            $table->json('report')->comment('rapport de traitement');
 
             $table->timestamps();
         });

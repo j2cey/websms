@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\DB;
  * @property integer $nb_rows_failed
  *
  * @property string $row_last_processed
- * @property string $import_report
+ * @property string $report
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
@@ -38,7 +38,7 @@ class SmscampaignFile extends Model
 
     protected $guarded = [];
     protected $casts = [
-        'import_report' => 'array'
+        'report' => 'array'
     ];
 
     public function planning() {
