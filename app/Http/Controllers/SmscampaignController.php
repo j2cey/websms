@@ -15,6 +15,16 @@ use Illuminate\Support\Facades\DB;
 class SmscampaignController extends Controller
 {
     use SmsImportFileTrait;
+
+    public function testfunction(){
+        //Get number of lines
+        $smscampaign_file = SmscampaignFile::find(6);
+        $pendingfiles_dir = config('app.smscampaigns_filesfolder');
+        $command_to_exec = "wc -l '".$pendingfiles_dir."/"."$smscampaign_file->name'";
+        $totalLines = intval(exec($command_to_exec));
+        dd($command_to_exec,$totalLines);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -128,7 +138,9 @@ class SmscampaignController extends Controller
         ]);
 
         //loop through file and split every 1000 lines
-        $parts = (array_chunk($data, 500));
+        $file_max_line = 500;
+        $parts = (array_chunk($data, $file_max_line));
+        $parts_count = count($parts);
         $i = 1;
 
         $pendingfiles_dir = config('app.smscampaigns_filesfolder');
@@ -136,15 +148,17 @@ class SmscampaignController extends Controller
             $filename = $new_smscampaign->id.'_'.date('y-m-d-H-i-s').'_'.$i.'.csv';
             $filename_full = $pendingfiles_dir.'/'.$filename;
 
+            file_put_contents($filename_full, $line);
+            $i++;
+
+            $nb_rows = intval(exec("wc -l '".$filename_full."'"));
             $new_file = SmscampaignFile::create([
                 'name' => $filename,
                 'smscampaign_planning_id' => $new_planning->id,
+                'nb_rows' => $nb_rows,
                 'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
                 'import_report' => json_encode([]),
             ]);
-
-            file_put_contents($filename_full, $line);
-            $i++;
         }
 
         // Sessions Message

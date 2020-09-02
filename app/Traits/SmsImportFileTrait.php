@@ -20,7 +20,7 @@ trait SmsImportFileTrait
         //$rows = array_map("str_getcsv", explode($campaign->separateur_colonnes, $csvData));
         $rows = array_map("str_getcsv", explode("\n", $csvData));
 
-        $this->nb_rows = count($rows);
+        //$this->nb_rows = count($rows);
         //$this->nb_rows_imported = 0;
         //$this->nb_rows_failed = 0;
 

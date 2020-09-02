@@ -41,7 +41,7 @@ class SmscampaignPlanning extends Model
     protected $guarded = [];
 
     public function campaign() {
-        return $this->belongsTo('App\Smscampaign');
+        return $this->belongsTo('App\Smscampaign', 'smscampaign_id');
     }
 
     public function files() {
