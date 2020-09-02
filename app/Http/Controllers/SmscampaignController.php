@@ -120,11 +120,12 @@ class SmscampaignController extends Controller
         ]);
 
         // Nouveau planning (en attente importation fichiers)
-        $new_planning = new SmscampaignPlanning();
-        $new_planning->plan_at = Carbon::now(); // TODO: récupérer la date de planification
-        $new_planning->smscampaign_id = $new_smscampaign->id;
-        $new_planning->smscampaign_status_id = SmscampaignStatus::coded("1")->first()->id;
-        $new_planning->stat_all = 0;
+        $new_planning = SmscampaignPlanning::create([
+            'plan_at' => Carbon::now(), // TODO: récupérer la date de planification
+            'smscampaign_id' => $new_smscampaign->id,
+            'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
+            'stat_all' => 0,
+        ]);
 
         //loop through file and split every 1000 lines
         $parts = (array_chunk($data, 500));
