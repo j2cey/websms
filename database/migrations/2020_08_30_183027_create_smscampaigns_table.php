@@ -21,7 +21,6 @@ class CreateSmscampaignsTable extends Migration
             $table->string('description')->nullable()->comment('description de la campagne');
             $table->string('message')->nullable()->comment('message de la campagne');
             $table->string('separateur_colonnes')->nullable()->comment('separateur de colonnes dans le fichier');
-            $table->boolean('messages_individuels')->default(false)->comment('determine si la campagne a un message individuel par destinataire');
 
             $table->timestamp('importstart_at')->nullable()->comment('date de debut d importation des fichiers de la campagne');
             $table->timestamp('importend_at')->nullable()->comment('date de debut d importation des fichiers de la campagne');

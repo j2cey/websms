@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\DB;
  * @property string $description
  * @property string $message
  * @property string $separateur_colonnes
- * @property boolean $messages_individuels
  *
  * @property integer|null $smscampaign_type_id
  * @property integer|null $smscampaign_status_id

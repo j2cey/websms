@@ -124,7 +124,6 @@ class SmscampaignController extends Controller
             'message' => $formInput['message'],
             'description' => $formInput['description'],
             'separateur_colonnes' => $formInput['separateur_colonnes'],
-            'messages_individuels' => array_key_exists('messages_individuels', $formInput),
             'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
             'smscampaign_type_id' => $formInput['smscampaign_type_id'],
         ]);
@@ -158,10 +157,10 @@ class SmscampaignController extends Controller
                 'smscampaign_planning_id' => $new_planning->id,
                 'nb_rows' => $nb_rows,
                 'smscampaign_status_id' => SmscampaignStatus::coded("1")->first()->id,
-                'import_report' => json_encode([]),
+                'report' => json_encode([]),
             ]);
         }
-        //$new_planning->setStatus();
+        $new_planning->setStatus();
 
         // Sessions Message
         $request->session()->flash('msg_success',"Campagne créée avec Succès.");

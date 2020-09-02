@@ -45,6 +45,7 @@ trait SmsImportFileTrait
                         'message' => $msg,
                         'smscampaign_planning_id' => $planning->id,
                         'smscampaign_receiver_id' => $receiver->id,
+                        'report' => json_encode([]),
                     ]);
                     $this->nb_rows_imported += 1;
                 } else {
