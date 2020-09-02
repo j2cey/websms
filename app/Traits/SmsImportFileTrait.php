@@ -21,10 +21,6 @@ trait SmsImportFileTrait
         //$rows = array_map("str_getcsv", explode($campaign->separateur_colonnes, $csvData));
         $rows = array_map("str_getcsv", explode("\n", $csvData));
 
-        //$this->nb_rows = count($rows);
-        //$this->nb_rows_imported = 0;
-        //$this->nb_rows_failed = 0;
-
         $row_current = 1;
         //foreach ($rows as $row) {
         for ($i = 0; $i < $this->nb_rows; $i++) {
@@ -55,15 +51,6 @@ trait SmsImportFileTrait
                 // MAJ du SmscampaingFile
                 $this->row_last_processed = $row_current;
                 $this->setStatus();
-
-                // MAJ du SmscampaignPlanning
-                //$planning->setStatus();
-
-                // MAJ du Smscampaign
-                //$campaign->setStatus();
-
-                // Next Row
-                //$row_current += 1;
             }
         }
     }
@@ -72,12 +59,10 @@ trait SmsImportFileTrait
         $parse_result = false;
         if (empty($msg_in)) {
             $msg_out = $msg_in;
-            //$this->addToReport($row_current,"le message de SMS est vide");
             $report_msg = "le message de SMS est vide";
         } else {
             $msg_out = $msg_in;
             $parse_result = true;
-            //$this->addToReport($row_current,"message recupere avec succes");
             $report_msg = "message recupere avec succes";
         }
         return $parse_result;
@@ -91,11 +76,9 @@ trait SmsImportFileTrait
                 'mobile' => $mobile,
             ]);
             $parse_result = true;
-            //$this->addToReport($row_current,"numeros recupere avec succes");
             $report_msg = "numeros recupere avec succes";
         } else {
             $receiver = null;
-            //$this->addToReport($row_current,"le numero " . $mobile . "n est pas valide");
             $report_msg = "le numero " . $mobile . " n'est pas valide";
         }
         return $parse_result;
