@@ -161,7 +161,7 @@ class SmscampaignController extends Controller
                 'import_report' => json_encode([]),
             ]);
         }
-        $new_planning->setStatus();
+        //$new_planning->setStatus();
 
         // Sessions Message
         $request->session()->flash('msg_success',"Campagne créée avec Succès.");

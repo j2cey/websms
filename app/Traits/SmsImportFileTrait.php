@@ -55,10 +55,10 @@ trait SmsImportFileTrait
                 $this->setStatus();
 
                 // MAJ du SmscampaignPlanning
-                $planning->setStatus();
+                //$planning->setStatus();
 
                 // MAJ du Smscampaign
-                $campaign->setStatus();
+                //$campaign->setStatus();
 
                 // Next Row
                 //$row_current += 1;

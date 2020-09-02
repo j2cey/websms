@@ -143,4 +143,14 @@ class SmscampaignPlanning extends Model
             $this->sendingstart_at = $first_date;
         }
     }
+
+    public static function boot(){
+        parent::boot();
+
+        // Après chaque modification
+        self::updated(function($model){
+            // On met à jour le statut de la campagne parente
+            $model->campaign->setStatus();
+        });
+    }
 }

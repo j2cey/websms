@@ -101,4 +101,14 @@ class SmscampaignFile extends Model
             $this->save();
         }
     }
+
+    public static function boot(){
+        parent::boot();
+
+        // Après chaque modification
+        self::updated(function($model){
+            // On met à jour le statut du planning parent
+            $model->planning->setStatus();
+        });
+    }
 }

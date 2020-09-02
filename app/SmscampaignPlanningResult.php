@@ -45,4 +45,14 @@ class SmscampaignPlanningResult extends Model
     public function printDebug($str) {
         echo date('Ymd H:i:s ').$str."\r\n";
     }
+
+    public static function boot(){
+        parent::boot();
+
+        // Après chaque modification
+        self::updated(function($model){
+            // On met à jour le statut du planning parent
+            $model->planning->setStatus();
+        });
+    }
 }
