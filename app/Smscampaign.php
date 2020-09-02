@@ -113,9 +113,9 @@ class Smscampaign extends Model
 
             $this->setImportEnd(false);
 
-            $this->nb_to_send = $this->plannings()->sum('nb_to_send');
-            $this->nb_send_success = $this->plannings()->sum('nb_send_success');
-            $this->nb_send_failed = $this->plannings()->sum('nb_send_failed');
+            $this->nb_to_send = $this->plannings()->sum('stat_all');
+            $this->nb_send_success = $this->plannings()->sum('stat_success');
+            $this->nb_send_failed = $this->plannings()->sum('stat_failed');
 
             if ($this->nb_to_send == ($this->nb_send_success + $this->nb_send_failed)) {
                 // Traitement terminé
