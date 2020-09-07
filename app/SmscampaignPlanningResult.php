@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-//use App\GTSMSC\SmssendableTrait;
 use App\Traits\SmsSendTrait;
+use App\Traits\UuidTrait;
 
 /**
  * Class SmscampaignPlanningResult
@@ -18,6 +18,7 @@ use App\Traits\SmsSendTrait;
  * @property boolean $send_processing
  * @property boolean $send_success
  * @property boolean $send_processed
+ * @property integer $nb_try
  *
  * @property integer|null $smscampaign_planning_id
  * @property integer|null $smscampaign_receiver_id
@@ -29,11 +30,13 @@ use App\Traits\SmsSendTrait;
  */
 class SmscampaignPlanningResult extends Model
 {
-    use SmsSendTrait;
+    use SmsSendTrait, UuidTrait;
+
     protected $guarded = [];
     protected $casts = [
         'report' => 'array'
     ];
+    public function getRouteKeyName() { return 'uuid'; }
 
     public function planning() {
         return $this->belongsTo('App\SmscampaignPlanning','smscampaign_planning_id');
@@ -55,6 +58,12 @@ class SmscampaignPlanningResult extends Model
         self::updated(function($model){
             // On met à jour le statut du planning parent
             $model->planning->setStatus();
+        });
+
+        // Avant creation
+        self::creating(function($model){
+            // On crée et assigne l'uuid
+            $model->setUuid();
         });
     }
 }

@@ -15,6 +15,7 @@ class CreateSmscampaignsTable extends Migration
     {
         Schema::create('smscampaigns', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->string('titre')->comment('titre de la campagne');
             $table->string('expediteur')->comment('nom de l expediteur de la campagne');

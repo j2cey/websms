@@ -15,6 +15,7 @@ class CreateSmscampaignPlanningResultsTable extends Migration
     {
         Schema::create('smscampaign_planning_results', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->foreignId('smscampaign_planning_id')->nullable()
                 ->comment('reference de la planification')
@@ -31,6 +32,7 @@ class CreateSmscampaignPlanningResultsTable extends Migration
             $table->boolean('send_processing')->default(false)->comment('determine si l\'envoi est en cours');
             $table->boolean('send_success')->default(false)->comment('determine si l\'envoi est un succès');
             $table->boolean('send_processed')->default(false)->comment('determine si l\'envoi a été traité');
+            $table->integer('nb_try')->default(0)->comment('nombre de tentative(s) de traitement');
             $table->json('report')->comment('rapport de traitement');
 
             $table->timestamps();

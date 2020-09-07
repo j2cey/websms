@@ -15,6 +15,7 @@ class CreateSmsimportStatusesTable extends Migration
     {
         Schema::create('smsimport_statuses', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->integer('code')->unique()->comment('code du statut de l\'importation');
             $table->string('titre')->comment('titre du statut de l\'importation');

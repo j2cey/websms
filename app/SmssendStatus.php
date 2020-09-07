@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\UuidTrait;
 
 /**
  * Class SmssendStatus
@@ -19,11 +20,24 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SmssendStatus extends Model
 {
+    use UuidTrait;
+
     protected $guarded = [];
+    public function getRouteKeyName() { return 'uuid'; }
 
     public function scopeCoded($query, $code) {
         return $query
             ->where('code', $code)
             ;
+    }
+
+    public static function boot(){
+        parent::boot();
+
+        // Avant creation
+        self::creating(function($model){
+            // On crée et assigne l'uuid
+            $model->setUuid();
+        });
     }
 }

@@ -15,6 +15,7 @@ class CreateSmscampaignTypesTable extends Migration
     {
         Schema::create('smscampaign_types', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->integer('code')->unique()->comment('code du type de campagne');
             $table->string('titre')->comment('titre du type de campagne');

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ImportStatusTrait;
 use App\Traits\SendStatusTrait;
+use App\Traits\UuidTrait;
 
 /**
  * Class SmscampaignPlanning
@@ -39,10 +40,10 @@ use App\Traits\SendStatusTrait;
  */
 class SmscampaignPlanning extends Model
 {
-    use ImportStatusTrait;
-    use SendStatusTrait;
+    use ImportStatusTrait, SendStatusTrait, UuidTrait;
 
     protected $guarded = [];
+    public function getRouteKeyName() { return 'uuid'; }
 
     public function campaign() {
         return $this->belongsTo('App\Smscampaign', 'smscampaign_id');
@@ -64,8 +65,8 @@ class SmscampaignPlanning extends Model
         $this->setImportStatus('smscampaign_files','smscampaign_planning_id',$save);
 
         $this->nb_to_send = $this->results()->count();
-        $this->nb_send_success = $this->results()->where('send_success', 1)->count();
-        $this->nb_send_failed = $this->results()->where('send_success', 0)->count();
+        $this->nb_send_success = $this->results()->where('send_processed', 1)->where('send_success', 1)->count();
+        $this->nb_send_failed = $this->results()->where('send_processed', 1)->where('send_success', 0)->count();
         $this->nb_send_processing = $this->results()->where('send_processing', 1)->count();
         $this->nb_send_processed = $this->results()->where('send_processed', 1)->count();
 
@@ -79,6 +80,12 @@ class SmscampaignPlanning extends Model
         self::updated(function($model){
             // On met à jour le statut de la campagne parente
             $model->campaign->setStatus();
+        });
+
+        // Avant creation
+        self::creating(function($model){
+            // On crée et assigne l'uuid
+            $model->setUuid();
         });
     }
 }

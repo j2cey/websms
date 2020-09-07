@@ -47,13 +47,14 @@ trait SmsSendTrait
 
         if ($send_ok) {
             $this->send_success = true;
-            $this->addToReport(0,"Succès Envoie");
+            $this->addToReport(0,"Succès Envoie", 1);
         } else {
             $this->send_success = false;
-            $this->addToReport(0, $report_msg);
+            $this->addToReport(0, $report_msg, -1);
         }
 
         $this->send_processed = true;
+        $this->nb_try += 1;
         $this->sendingend_at = Carbon::now();
         $this->save();
     }

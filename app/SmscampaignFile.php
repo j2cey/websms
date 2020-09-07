@@ -5,7 +5,7 @@ namespace App;
 use App\Traits\SmsImportFileTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Traits\UuidTrait;
 
 /**
  * Class SmscampaignFile
@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
  * @property integer $nb_rows_failed
  *
  * @property string $row_last_processed
+ * @property integer $nb_try
  * @property string $report
  *
  * @property \Illuminate\Support\Carbon $created_at
@@ -34,12 +35,13 @@ use Illuminate\Support\Facades\DB;
  */
 class SmscampaignFile extends Model
 {
-    use SmsImportFileTrait;
+    use SmsImportFileTrait, UuidTrait;
 
     protected $guarded = [];
     protected $casts = [
         'report' => 'array'
     ];
+    public function getRouteKeyName() { return 'uuid'; }
 
     public function planning() {
         return $this->belongsTo('App\SmscampaignPlanning', 'smscampaign_planning_id');
@@ -109,6 +111,12 @@ class SmscampaignFile extends Model
         self::updated(function($model){
             // On met à jour le statut du planning parent
             $model->planning->setStatus();
+        });
+
+        // Avant creation
+        self::creating(function($model){
+            // On crée et assigne l'uuid
+            $model->setUuid();
         });
     }
 }

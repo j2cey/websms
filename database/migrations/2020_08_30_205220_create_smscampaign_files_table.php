@@ -15,6 +15,7 @@ class CreateSmscampaignFilesTable extends Migration
     {
         Schema::create('smscampaign_files', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->foreignId('smscampaign_planning_id')->nullable()
                 ->comment('reference de la planification')
@@ -31,6 +32,7 @@ class CreateSmscampaignFilesTable extends Migration
             $table->integer('nb_rows_failed')->default(0)->comment('nombre total de lignes echouees');
 
             $table->integer('row_last_processed')->default(0)->comment('derniere ligne traitée');
+            $table->integer('nb_try')->default(0)->comment('nombre de tentative(s) de traitement');
             $table->json('report')->comment('rapport d importation');
 
             $table->foreignId('smsimport_status_id')->nullable()

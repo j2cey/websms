@@ -12,9 +12,9 @@ class SmscampaignTypeSeeder extends Seeder
      */
     public function run()
     {
-        $this->createNew("0", "message commun");
-        $this->createNew("1", "messages individuels");
-        $this->createNew("2", "mixte");
+        $this->createNew("0", "Message Commun");
+        $this->createNew("1", "Messages Individuels");
+        $this->createNew("2", "Campagne Mixte");
     }
 
     private function createNew($code, $title) {

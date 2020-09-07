@@ -15,6 +15,7 @@ class CreateSmscampaignPlanningsTable extends Migration
     {
         Schema::create('smscampaign_plannings', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->foreignId('smscampaign_id')->nullable()
                 ->comment('reference de la campagne')

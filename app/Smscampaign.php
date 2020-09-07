@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\ImportStatusTrait;
 use App\Traits\SendStatusTrait;
 use Illuminate\Support\Carbon;
+use App\Traits\UuidTrait;
 
 /**
  * Class Smscampaign
@@ -50,10 +51,10 @@ use Illuminate\Support\Carbon;
  */
 class Smscampaign extends Model
 {
-    use ImportStatusTrait;
-    use SendStatusTrait;
+    use ImportStatusTrait, SendStatusTrait, UuidTrait;
 
     protected $guarded = [];
+    public function getRouteKeyName() { return 'uuid'; }
 
     public function type() {
         return $this->belongsTo('App\SmscampaignType', 'smscampaign_type_id');
@@ -119,5 +120,15 @@ class Smscampaign extends Model
 
     public function unsetCurrentPlannings() {
         $this->plannings()->update(['current' => 0]);
+    }
+
+    public static function boot(){
+        parent::boot();
+
+        // Avant creation
+        self::creating(function($model){
+            // On crée et assigne l'uuid
+            $model->setUuid();
+        });
     }
 }

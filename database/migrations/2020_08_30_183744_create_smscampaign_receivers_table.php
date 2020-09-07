@@ -15,6 +15,7 @@ class CreateSmscampaignReceiversTable extends Migration
     {
         Schema::create('smscampaign_receivers', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->string('mobile')->comment('numéro mobile du destinataire');
             $table->string('identite')->nullable()->comment('identite du destinataire');

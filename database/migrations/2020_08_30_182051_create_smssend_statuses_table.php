@@ -15,6 +15,7 @@ class CreateSmssendStatusesTable extends Migration
     {
         Schema::create('smssend_statuses', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->integer('code')->unique()->comment('code du statut de l\'envoie');
             $table->string('titre')->comment('titre du statut de l\'envoie');

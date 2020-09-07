@@ -18,6 +18,14 @@ class SmscampaignController extends Controller
     use SmsImportFileTrait;
 
     public function testfunction(){
+        $os = array("Mac", "NT", "Irix", "Linux");
+        if (in_array("Irix", $os)) {
+            echo "Got Irix";
+        }
+        if (in_array("mac", $os)) {
+            echo "Got mac";
+        }
+        dd("Fin Test");
         //Get number of lines
         $smscampaign_file = SmscampaignFile::find(6);
         $pendingfiles_dir = config('app.smscampaigns_filesfolder');
@@ -188,7 +196,9 @@ class SmscampaignController extends Controller
      */
     public function show(Smscampaign $smscampaign)
     {
-        //
+        $smscampaign = Smscampaign::with('importstatus')
+            ->with('sendstatus')->where('id', $smscampaign->id)->first();
+        return view('smscampaigns.show', ['smscampaign' => $smscampaign]);
     }
 
     /**
@@ -199,7 +209,14 @@ class SmscampaignController extends Controller
      */
     public function edit(Smscampaign $smscampaign)
     {
-        //
+        $smscampaign_types = DB::table('smscampaign_types')->get()->pluck('titre', 'id');
+
+        $nowdate = Carbon::now();
+
+        return view('smscampaigns.edit')
+            ->with('nowdate', $nowdate)
+            ->with('smscampaign_types', $smscampaign_types)
+            ->with('smscampaign', $smscampaign);
     }
 
     /**

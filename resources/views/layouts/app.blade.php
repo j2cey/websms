@@ -60,7 +60,6 @@
                     </div>
 
                     <div class="button-items">
-                    <!-- <h5 class="page-title">@yield('page')</h5> -->
                         @yield('page')
                         @yield('buttons')
                     </div>

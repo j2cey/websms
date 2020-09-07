@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\UuidTrait;
 
 /**
  * Class SmscampaignReceiver
@@ -18,5 +19,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SmscampaignReceiver extends Model
 {
+    use UuidTrait;
+
     protected $guarded = [];
+    public function getRouteKeyName() { return 'uuid'; }
+
+    public static function boot(){
+        parent::boot();
+
+        // Avant creation
+        self::creating(function($model){
+            // On crée et assigne l'uuid
+            $model->setUuid();
+        });
+    }
 }
