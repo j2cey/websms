@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Smscampaign\CreateSmscampaignRequest;
+use App\Http\Requests\Smscampaign\UpdateSmscampaignRequest;
 use App\Smscampaign;
 use App\SmscampaignFile;
-use App\SmscampaignPlanning;
 use App\SmsimportStatus;
 use App\SmssendStatus;
 use Illuminate\Http\Request;
@@ -18,6 +19,9 @@ class SmscampaignController extends Controller
     use SmsImportFileTrait;
 
     public function testfunction(){
+
+        dd( str_replace(['-',' ',':'],"",gmdate('Y-m-d h:i:s')) );
+
         $os = array("Mac", "NT", "Irix", "Linux");
         if (in_array("Irix", $os)) {
             echo "Got Irix";
@@ -106,33 +110,15 @@ class SmscampaignController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateSmscampaignRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CreateSmscampaignRequest $request)
     {
         $user = auth()->user();
 
-        request()->validate([
-            'fichier_destinataires' => 'required|mimes:csv,txt',
-            'titre' => 'required',
-            'smscampaign_type_id' => 'required',
-            'expediteur' => 'required',
-            'separateur_colonnes' => 'required',
-        ]);
-
         //get file from upload
-        $path = request()->file('fichier_destinataires')->getRealPath();
-
-        //turn into array
-        $file = file($path);
-
-        if ($request->has('premiere_ligne_entete')) {
-            //remove first line
-            $data = array_slice($file, 1);
-        } else {
-            $data = $file;
-        }
+        $fullpathfile = request()->file('fichier_destinataires')->getRealPath();
 
         $formInput = $request->all();
 
@@ -142,45 +128,13 @@ class SmscampaignController extends Controller
             'message' => $formInput['message'],
             'description' => $formInput['description'],
             'separateur_colonnes' => $formInput['separateur_colonnes'],
-            'smsimport_status_id' => SmsimportStatus::coded("1")->first()->id,
-            'smssend_status_id' => SmssendStatus::coded("1")->first()->id,
+            'smsimport_status_id' => SmsimportStatus::coded("0")->first()->id,
+            'smssend_status_id' => SmssendStatus::coded("0")->first()->id,
             'smscampaign_type_id' => $formInput['smscampaign_type_id'],
             'user_id' => $user->id,
         ]);
 
-        // Nouveau planning (en attente importation fichiers)
-        $new_planning = SmscampaignPlanning::create([
-            'plan_at' => Carbon::now(), // TODO: récupérer la date de planification
-            'smscampaign_id' => $new_smscampaign->id,
-            'smsimport_status_id' => SmsimportStatus::coded("1")->first()->id,
-            'smssend_status_id' => SmssendStatus::coded("1")->first()->id,
-            'current' => true,
-        ]);
-
-        //loop through file and split every 1000 lines
-        $file_max_line = 500;
-        $parts = (array_chunk($data, $file_max_line));
-        $parts_count = count($parts);
-        $i = 1;
-
-        $pendingfiles_dir = config('app.smscampaigns_filesfolder');
-        foreach($parts as $line) {
-            $filename = $new_smscampaign->id.'_'.date('y-m-d-H-i-s').'_'.$i.'.csv';
-            $filename_full = $pendingfiles_dir.'/'.$filename;
-
-            file_put_contents($filename_full, $line);
-            $i++;
-
-            $nb_rows = intval(exec("wc -l '".$filename_full."'"));
-            $new_file = SmscampaignFile::create([
-                'name' => $filename,
-                'smscampaign_planning_id' => $new_planning->id,
-                'nb_rows' => $nb_rows,
-                'smsimport_status_id' => SmsimportStatus::coded("1")->first()->id,
-                'report' => json_encode([]),
-            ]);
-        }
-        $new_planning->setStatus();
+        $new_smscampaign->addFile( $fullpathfile, ($request->has('premiere_ligne_entete')) );
 
         // Sessions Message
         $request->session()->flash('msg_success',"Campagne créée avec Succès.");
@@ -222,13 +176,35 @@ class SmscampaignController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Smscampaign  $smscampaign
-     * @return \Illuminate\Http\Response
+     * @param UpdateSmscampaignRequest $request
+     * @param Smscampaign $smscampaign
      */
-    public function update(Request $request, Smscampaign $smscampaign)
+    public function update(UpdateSmscampaignRequest $request, Smscampaign $smscampaign)
     {
-        //
+        $user = auth()->user();
+        $formInput = $request->all();
+        $smscampaign->update([
+            'titre' => $formInput['titre'],
+            'expediteur' => $formInput['expediteur'],
+            'message' => $formInput['message'],
+            'description' => $formInput['description'],
+            'separateur_colonnes' => $formInput['separateur_colonnes'],
+            'smscampaign_type_id' => $formInput['smscampaign_type_id'],
+        ]);
+
+        if ($request->hasFile('fichier_destinataires')) {
+            //get file from upload
+            $fullpathfile = request()->file('fichier_destinataires')->getRealPath();
+            $smscampaign->addFile( $fullpathfile, ($request->has('premiere_ligne_entete')) );
+        }
+
+        // Réinitialiser le curseur des planifications ayant des failed
+        $smscampaign->resetFailedPlanningsCursor();
+
+        // Sessions Message
+        $request->session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' modifiée avec Succès.");
+
+        return redirect()->action('SmscampaignController@index');
     }
 
     /**
@@ -239,7 +215,13 @@ class SmscampaignController extends Controller
      */
     public function destroy(Smscampaign $smscampaign)
     {
-        //
+        // On suspend d'abord tous les éléments de la campagne
+        $smscampaign->suspend();
+        // Puis on la supprime (soft)
+        $smscampaign->delete();
+        session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' supprimée avec Succès.");
+
+        return redirect()->action('SmscampaignController@index');
     }
 
     public function importcampaignfiles() {

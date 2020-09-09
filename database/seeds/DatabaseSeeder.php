@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SmsimportStatusSeeder::class);
         $this->call(SmssendStatusSeeder::class);
         $this->call(SmscampaignTypeSeeder::class);
+        $this->call(SmstreatmentResultSeeder::class);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSmscampaignTypesTable extends Migration
+class CreateSmstreatmentResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateSmscampaignTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('smscampaign_types', function (Blueprint $table) {
+        Schema::create('smstreatment_results', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique()->comment('identifiant universel unique');
 
             $table->integer('code')->unique()->comment('code du type de campagne');
-            $table->string('titre')->comment('titre du type de campagne');
-            $table->string('description')->nullable()->comment('description du type de campagne');
+            $table->string('titre')->comment('titre du résultat');
+            $table->string('description')->nullable()->comment('description du résultat');
 
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class CreateSmscampaignTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('smscampaign_types');
+        Schema::dropIfExists('smstreatment_results');
     }
 }

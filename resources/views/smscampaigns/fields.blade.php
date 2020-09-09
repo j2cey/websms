@@ -64,7 +64,7 @@
 <div class="form-group row {{ $errors->has('separateur_colonnes') ? 'has-error' : '' }}">
     <label class="col-sm-2 col-form-label" for="separateur_colonnes">Séparateur Colonnes</label>
     <div class="col-sm-10">
-        <input name="separateur_colonnes" type="text" class="form-control" placeholder="Séparateur Colonnes" value="{{  old('description', $smscampaign->separateur_colonnes ?? '') }}"/>
+        <input name="separateur_colonnes" type="text" class="form-control" placeholder="Séparateur Colonnes" value="{{  old('separateur_colonnes', $smscampaign->separateur_colonnes ?? '') }}"/>
         <small class="text-danger">{{ $errors->has('separateur_colonnes') ? $errors->first('separateur_colonnes') : '' }}</small>
     </div>
 </div>

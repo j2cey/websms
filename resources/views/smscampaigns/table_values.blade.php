@@ -14,9 +14,9 @@
 <td>{{ $currval->message }}</td>
 <td>
     @include('smscampaigns.status_display', ['status' => $currval->importstatus])
-    {{ $currval->nb_import_success }} / {{ $currval->nb_to_import }}
+    {{ $currval->smsresult->nb_import_success ?? '0' }} / {{ $currval->smsresult->nb_to_import ?? '0' }}
 </td>
 <td>
     @include('smscampaigns.status_display', ['status' => $currval->sendstatus])
-    {{ $currval->nb_send_success }} / {{ $currval->nb_to_send }}
+    {{ $currval->smsresult->nb_send_success ?? '0' }} / {{ $currval->smsresult->nb_to_send ?? '0' }}
 </td>

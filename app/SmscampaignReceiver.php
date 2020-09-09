@@ -10,6 +10,7 @@ use App\Traits\UuidTrait;
  * @package App
  *
  * @property integer $id
+ * @property string $uuid
  *
  * @property string $mobile
  * @property string|null $identite

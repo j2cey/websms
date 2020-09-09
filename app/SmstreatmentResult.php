@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidTrait;
 
 /**
- * Class SmssendStatus
+ * Class SmstreatmentResult
  * @package App
  *
  * @property integer $id
@@ -19,7 +19,7 @@ use App\Traits\UuidTrait;
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
-class SmssendStatus extends Model
+class SmstreatmentResult extends Model
 {
     use UuidTrait;
 

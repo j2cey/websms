@@ -67,7 +67,7 @@
                                             <a href="#" onclick="if(confirm('Etes-vous sur de vouloir supprimer?')) {event.preventDefault(); document.getElementById('index_destroy-form-{{ $currval->id }}').submit();}">
                                                 <i class="ti-trash" style="color:red"></i>
                                             </a>
-                                            <form id="index_destroy-form-{{ $currval->id }}" action="{{ action('SmscampaignController@destroy', $currval->id) }}" method="POST" style="display: none;">
+                                            <form id="index_destroy-form-{{ $currval->id }}" action="{{ action('SmscampaignController@destroy', $currval) }}" method="POST" style="display: none;">
                                                 @method('DELETE')
                                                 @csrf
                                                 <input type="hidden" value="{{ $currval->id }}" name="id">

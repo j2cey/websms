@@ -23,13 +23,16 @@ class CreateSmscampaignFilesTable extends Migration
 
             $table->string('name')->comment('nom du fichier');
             $table->boolean('imported')->default(false)->comment('determine si le fichier a deja ete importe dans la BD');
+            $table->timestamp('suspended_at')->nullable()->comment('date de suspension le cas échéant');
 
             $table->timestamp('importstart_at')->nullable()->comment('date de debut d importation dans la BD');
             $table->timestamp('importend_at')->nullable()->comment('date de fin d importation dans la BD');
 
             $table->integer('nb_rows')->default(0)->comment('nombre total de lignes');
-            $table->integer('nb_rows_imported')->default(0)->comment('nombre total de lignes importees');
-            $table->integer('nb_rows_failed')->default(0)->comment('nombre total de lignes echouees');
+            $table->integer('nb_rows_success')->default(0)->comment('nombre total de ligne(s) importée(s) avec succès');
+            $table->integer('nb_rows_failed')->default(0)->comment('nombre total de ligne(s) echouée(s)');
+            $table->integer('nb_rows_processing')->default(0)->comment('nombre total de ligne(s) en cours de traitement');
+            $table->integer('nb_rows_processed')->default(0)->comment('nombre total de ligne(s) traitée(s)');
 
             $table->integer('row_last_processed')->default(0)->comment('derniere ligne traitée');
             $table->integer('nb_try')->default(0)->comment('nombre de tentative(s) de traitement');

@@ -5,12 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\SmsSendTrait;
 use App\Traits\UuidTrait;
+use App\Traits\SuspendableTrait;
 
 /**
  * Class SmscampaignPlanningResult
  * @package App
  *
  * @property integer $id
+ * @property string $uuid
  *
  * @property string $message
  * @property \Illuminate\Support\Carbon $sendingstart_at
@@ -25,12 +27,14 @@ use App\Traits\UuidTrait;
  *
  * @property string $report
  *
+ * @property \Illuminate\Support\Carbon $suspended_at
+ *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
 class SmscampaignPlanningResult extends Model
 {
-    use SmsSendTrait, UuidTrait;
+    use SmsSendTrait, UuidTrait, SuspendableTrait;
 
     protected $guarded = [];
     protected $casts = [
@@ -57,7 +61,7 @@ class SmscampaignPlanningResult extends Model
         // Après chaque modification
         self::updated(function($model){
             // On met à jour le statut du planning parent
-            $model->planning->setStatus();
+            //$model->planning->setStatus();
         });
 
         // Avant creation

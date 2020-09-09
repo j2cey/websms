@@ -34,17 +34,12 @@ class CreateSmscampaignsTable extends Migration
             $table->integer('planning_done')->default(0)->comment('nombre de planifications effectuées');
             $table->integer('planning_waiting')->default(0)->comment('nombre de planifications en attente de traitement');
 
-            $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi des SMS de la campagne');
-            $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi des SMS de la campagne');
-
-            $table->integer('nb_to_send')->default(0)->comment('nombre de sms a traiter');
-            $table->integer('nb_send_processing')->default(false)->comment('nombre d\'envoi en cours');
-            $table->integer('nb_send_success')->default(0)->comment('nombre de sms envoyés avec succès');
-            $table->integer('nb_send_failed')->default(0)->comment('nombre de sms dont l envoie a échoué');
-            $table->integer('nb_send_processed')->default(0)->comment('nombre de traitement(s) effectué(s)');
-
             $table->foreignId('smscampaign_type_id')->nullable()
                 ->comment('Reference du type')
+                ->constrained()->onDelete('set null');
+
+            $table->foreignId('smsresult_id')->nullable()
+                ->comment('Reference du résultat du traitement SMS global')
                 ->constrained()->onDelete('set null');
 
             $table->foreignId('smsimport_status_id')->nullable()
@@ -55,11 +50,13 @@ class CreateSmscampaignsTable extends Migration
                 ->comment('Reference du statut de l\'envoie')
                 ->constrained()->onDelete('set null');
 
+
             $table->foreignId('user_id')->nullable()
                 ->comment('Reference de l\'utilisateur')
                 ->constrained()->onDelete('set null');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -74,7 +71,9 @@ class CreateSmscampaignsTable extends Migration
             $table->dropForeign(['smscampaign_type_id']);
             $table->dropForeign(['smsimport_status_id']);
             $table->dropForeign(['smssend_status_id']);
+            $table->dropForeign(['smsresult_id']);
             $table->dropForeign(['user_id']);
+            $table->dropSoftDeletes();
         });
         Schema::dropIfExists('smscampaigns');
     }

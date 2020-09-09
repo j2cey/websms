@@ -14,6 +14,7 @@ use App\Traits\UuidTrait;
  *
  * @property string $code
  * @property string $titre
+ * @property string $description
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at

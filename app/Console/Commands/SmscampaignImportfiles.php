@@ -38,7 +38,7 @@ class SmscampaignImportfiles extends Command
      */
     public function handle()
     {
-        $file_to_import = SmscampaignFile::where('imported', 0)->first();
+        $file_to_import = SmscampaignFile::where('imported', 0)->whereNull('suspended_at')->first();
 
         \Log::info("smscampaign:importfiles en cours de traitement...");
 

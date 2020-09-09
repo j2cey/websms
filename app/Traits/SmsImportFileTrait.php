@@ -17,13 +17,11 @@ trait SmsImportFileTrait
         $planning = $this->planning;
         $campaign = $planning->campaign;
 
-        $csvData = file_get_contents($raw_dir.'/'.$file_fullpath); // separateur_colonnes
-        //$rows = array_map("str_getcsv", explode($campaign->separateur_colonnes, $csvData));
+        $csvData = file_get_contents($raw_dir.'/'.$file_fullpath);
         $rows = array_map("str_getcsv", explode("\n", $csvData));
 
         //dd($this->report);
 
-        $row_current = 1;
         //foreach ($rows as $row) {
         for ($i = 0; $i < $this->nb_rows; $i++) {
             $row_current = $i + 1;
@@ -32,13 +30,13 @@ trait SmsImportFileTrait
             $can_process_line = ($row_current > $this->row_last_processed);
             if ($can_process_line) {
                 $report_line = "";
-                $report_line_result = 0;
                 if ( $this->getReportLine($row_current, $report_line,true) ) {
                     // Cette ligne peut être traité si son dernier traitement a été un échec
-                    $report_line_result = $report_line[1];
                     if ($report_line[1] < 0) {
                         $can_process_line = true;
                         $this->nb_rows_failed -= 1;
+                        $this->nb_rows_processed -= 1;
+                        $planning->addImportResult(0, 0, 0, -1, -1);
                     } else {
                         // line déjà traité avec succès, alors ...
                         // on la remet dans le rapport
@@ -48,14 +46,13 @@ trait SmsImportFileTrait
                         $can_process_line = false;
                     }
                 }
-
-                echo("report line result: ");
-                var_dump($report_line_result);
-                echo("can process line: ");
-                var_dump($can_process_line);
             }
 
             if ($can_process_line) {
+
+                $this->nb_rows_processing += 1;
+                $planning->addImportResult(0, 1, 0, 0, 0);
+                $this->save();
 
                 $receiver = new SmscampaignReceiver();
                 $msg = "";
@@ -64,24 +61,31 @@ trait SmsImportFileTrait
                 $row_parse_ok = $this->getParameters($row_current, $row[0], $campaign, $receiver, $msg);
 
                 if ($row_parse_ok) {
-                    // incrément des lignes a traiter dans la planning
-                    $planning->nb_to_import += 1;
                     // New planning result
-                    $planning_result = SmscampaignPlanningResult::create([
+                    SmscampaignPlanningResult::create([
                         'message' => $msg,
                         'smscampaign_planning_id' => $planning->id,
                         'smscampaign_receiver_id' => $receiver->id,
                         'report' => json_encode([]),
                     ]);
-                    $this->nb_rows_imported += 1;
+                    $this->nb_rows_success += 1;
+                    $planning->addSendResult(1, 0, 0, 0, 0);
                 } else {
                     $this->nb_rows_failed += 1;
                 }
 
+                $this->nb_rows_processing -= 1;
+                $this->nb_rows_processed += 1;
+
+                // Save smsresult
+                $planning->addImportResult(0, -1, ($row_parse_ok ? 1 : 0), ($row_parse_ok ? 0 : 1), 1);
+
+                $this->save();
+
                 // MAJ du SmscampaingFile
                 $this->row_last_processed = $row_current;
-                $this->setStatus();
             }
+            $this->setStatus();
         }
         $this->nb_try += 1;
         $this->save();

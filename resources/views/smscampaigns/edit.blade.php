@@ -17,7 +17,7 @@
                     <h4 class="mt-0 header-title">Modification</h4>
                     <p class="text-muted m-b-30 font-14">Modification de la Campagne <code class="highlighter-rouge"><strong>{{ ucfirst($smscampaign->titre) }}</strong></code>.</p>
 
-                    <form action="{{ action('SmscampaignController@update', $smscampaign->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ action('SmscampaignController@update', $smscampaign) }}" method="POST" enctype="multipart/form-data">
                         @method('PUT')
 
                         @include('smscampaigns.fields')

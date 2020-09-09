@@ -6,44 +6,37 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\ImportStatusTrait;
 use App\Traits\SendStatusTrait;
 use App\Traits\UuidTrait;
+use App\Traits\SmsResultTrait;
 
 /**
  * Class SmscampaignPlanning
  * @package App
  *
  * @property integer $id
+ * @property string $uuid
  *
  * @property boolean $current
  *
  * @property \Illuminate\Support\Carbon $plan_at
  * @property \Illuminate\Support\Carbon $plandone_at
  *
- * @property \Illuminate\Support\Carbon $importstart_at
- * @property \Illuminate\Support\Carbon $importend_at
- * @property integer $nb_to_import
- * @property integer $nb_import_success
- * @property integer $nb_import_failed
- *
- * @property \Illuminate\Support\Carbon $sendingstart_at
- * @property \Illuminate\Support\Carbon $sendingend_at
- * @property integer $nb_to_send
- * @property integer $nb_send_processing
- * @property integer $nb_send_success
- * @property integer $nb_send_failed
- * @property integer $nb_send_processed
+ * @property integer|null $smsimport_status_id
+ * @property integer|null $smssend_status_id
  *
  * @property integer|null $smscampaign_id
- * @property integer|null $smscampaign_status_id
+ * @property integer|null $smsresult_id
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
 class SmscampaignPlanning extends Model
 {
-    use ImportStatusTrait, SendStatusTrait, UuidTrait;
+    use ImportStatusTrait, SendStatusTrait, UuidTrait, SmsResultTrait;
 
     protected $guarded = [];
     public function getRouteKeyName() { return 'uuid'; }
+
+    #region Eloquent Relations
 
     public function campaign() {
         return $this->belongsTo('App\Smscampaign', 'smscampaign_id');
@@ -53,25 +46,53 @@ class SmscampaignPlanning extends Model
         return $this->hasMany('App\SmscampaignFile');
     }
 
+    public function smsresult() {
+        return $this->belongsTo('App\Smsresult', 'smsresult_id');;
+    }
+
+    public function importstatus() {
+        return $this->belongsTo('App\SmsimportStatus', 'smsimport_status_id');
+    }
+
     public function results() {
         return $this->hasMany('App\SmscampaignPlanningResult');
     }
 
-    public function setStatus($save = true) {
-        $this->nb_to_import = $this->files()->sum('nb_rows');
-        $this->nb_import_success = $this->files()->sum('nb_rows_imported');
-        $this->nb_import_failed = $this->files()->sum('nb_rows_failed');
-
-        $this->setImportStatus('smscampaign_files','smscampaign_planning_id',$save);
-
-        $this->nb_to_send = $this->results()->count();
-        $this->nb_send_success = $this->results()->where('send_processed', 1)->where('send_success', 1)->count();
-        $this->nb_send_failed = $this->results()->where('send_processed', 1)->where('send_success', 0)->count();
-        $this->nb_send_processing = $this->results()->where('send_processing', 1)->count();
-        $this->nb_send_processed = $this->results()->where('send_processed', 1)->count();
-
-        $this->setSendStatus('smscampaign_planning_results','smscampaign_planning_id',$save);
+    public function sendstatus() {
+        return $this->belongsTo('App\SmssendStatus', 'smssend_status_id');
     }
+
+    #endregion
+
+    #region Customs Functions
+
+    public function setStatus($save = true) {
+
+        $this->setImportStatus($save);
+
+        $this->setSendStatus($save);
+    }
+
+    public function resetFailedFilesCursor() {
+        $this->files()->where('nb_rows_failed', '>', 0)->update([
+            'imported' => 0,
+            'row_last_processed' => 0,
+        ]);
+    }
+
+    public function suspend() {
+        // Suspend all files
+        foreach ($this->files as $file) {
+            $file->suspend();
+        }
+
+        // Suspend all sends
+        foreach ($this->results as $result) {
+            $result->suspend();
+        }
+    }
+
+    #endregion
 
     public static function boot(){
         parent::boot();
@@ -79,7 +100,7 @@ class SmscampaignPlanning extends Model
         // Après chaque modification
         self::updated(function($model){
             // On met à jour le statut de la campagne parente
-            $model->campaign->setStatus();
+            //$model->campaign->setStatus();
         });
 
         // Avant creation

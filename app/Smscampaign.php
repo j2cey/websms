@@ -7,12 +7,16 @@ use App\Traits\ImportStatusTrait;
 use App\Traits\SendStatusTrait;
 use Illuminate\Support\Carbon;
 use App\Traits\UuidTrait;
+use App\Traits\SmsResultTrait;
+use App\Traits\SmscampaignTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Smscampaign
  * @package App
  *
  * @property integer $id
+ * @property string $uuid
  *
  * @property string $titre
  * @property string $expediteur
@@ -24,37 +28,25 @@ use App\Traits\UuidTrait;
  * @property integer|null $smsimport_status_id
  * @property integer|null $smssend_status_id
  *
- * @property \Illuminate\Support\Carbon $importstart_at
- * @property \Illuminate\Support\Carbon $importend_at
- *
- * @property integer $nb_to_import
- * @property integer $nb_import_success
- * @property integer $nb_import_failed
- *
  * @property integer $planning_sending
  * @property integer $planning_done
  * @property integer $planning_waiting
  *
- * @property \Illuminate\Support\Carbon $sendingstart_at
- * @property \Illuminate\Support\Carbon $sendingend_at
- *
- * @property integer $nb_to_send
- * @property integer $nb_send_processing
- * @property integer $nb_send_success
- * @property integer $nb_send_failed
- * @property integer $nb_send_processed
- *
  * @property integer|null $user_id
+ * @property integer|null $smsresult_id
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $deleted_at
  */
 class Smscampaign extends Model
 {
-    use ImportStatusTrait, SendStatusTrait, UuidTrait;
+    use ImportStatusTrait, SendStatusTrait, UuidTrait, SmscampaignTrait, SoftDeletes, SmsResultTrait;
 
     protected $guarded = [];
     public function getRouteKeyName() { return 'uuid'; }
+
+    #region Eloquent Relations
 
     public function type() {
         return $this->belongsTo('App\SmscampaignType', 'smscampaign_type_id');
@@ -63,8 +55,13 @@ class Smscampaign extends Model
     public function importstatus() {
         return $this->belongsTo('App\SmsimportStatus', 'smsimport_status_id');
     }
+
     public function sendstatus() {
         return $this->belongsTo('App\SmssendStatus', 'smssend_status_id');
+    }
+
+    public function smsresult() {
+        return $this->belongsTo('App\Smsresult', 'smsresult_id');;
     }
 
     public function planningsAll() {
@@ -76,6 +73,33 @@ class Smscampaign extends Model
     public function planningsPast() {
         return $this->hasMany('App\SmscampaignPlanning')->where('current', 0);
     }
+
+    #endregion
+
+    #region Validation Rules
+
+    public static function defaultRules() {
+        return [
+            'titre' => 'required',
+            'smscampaign_type_id' => 'required',
+            'expediteur' => 'required',
+        ];
+    }
+    public static function createRules() {
+        return array_merge(self::defaultRules(), [
+            'fichier_destinataires' => 'required|mimes:csv,txt',
+            'separateur_colonnes' => 'required',
+        ]);
+    }
+    public static function updateRules($model) {
+        return array_merge(self::defaultRules(), [
+            'separateur_colonnes'  => 'required_with:fichier_destinataires'
+        ]);
+    }
+
+    #endregion
+
+    #region Scopes
 
     public function scopeSearch($query,$titre,$exp,$importstatus,$sendstatus,$descript,$dt_deb,$dt_fin) {
         if ($titre == null && ($dt_deb == null || $dt_fin == null) && $importstatus == null && $sendstatus == null && $exp == null && $descript == null) return $query;
@@ -102,25 +126,57 @@ class Smscampaign extends Model
         return $query;
     }
 
+    #endregion
+
+    #region Customs Functions
+
     public function setStatus($save = true) {
-        $this->nb_to_import = $this->plannings()->sum('nb_to_import');
-        $this->nb_import_success = $this->plannings()->sum('nb_import_success');
-        $this->nb_import_failed = $this->plannings()->sum('nb_import_failed');
 
-        $this->setImportStatus('smscampaign_plannings', 'smscampaign_id',$save);
+        $this->setImportStatus($save);
 
-        $this->nb_to_send = $this->plannings()->sum('nb_to_send');
-        $this->nb_send_success = $this->plannings()->sum('nb_send_success');
-        $this->nb_send_failed = $this->plannings()->sum('nb_send_failed');
-        $this->nb_send_processing = $this->plannings()->sum('nb_send_processing');
-        $this->nb_send_processed = $this->plannings()->sum('nb_send_processed');
+        $this->setSendStatus($save);
+    }
 
-        $this->setSendStatus('smscampaign_plannings', 'smscampaign_id',$save);
+    public function getPlanningsImportResultsIds() {
+        $this->plannings()->pluck('smsimport_result_id');
+    }
+    public function getPlanningsSendResultsIds() {
+        $this->plannings()->pluck('smssend_result_id');
+    }
+
+    public function getImportPercentage() {
+        if ($this->smsresult && ($this->smsresult->nb_to_import > 0)) {
+            return round((($this->smsresult->nb_import_processed) / $this->smsresult->nb_to_import) * 100, 0);
+        } else {
+            return 0;
+        }
+    }
+
+    public function getSendPercentage() {
+        if ($this->smsresult && ($this->smsresult->nb_to_send > 0)) {
+            return round(($this->smsresult->nb_send_processed / $this->smsresult->nb_to_send) * 100, 0);
+        } else {
+            return 0;
+        }
     }
 
     public function unsetCurrentPlannings() {
         $this->plannings()->update(['current' => 0]);
     }
+
+    public function resetFailedPlanningsCursor() {
+        foreach ($this->plannings as $planning) {
+            $planning->resetFailedFilesCursor();
+        }
+    }
+
+    public function suspend() {
+        foreach ($this->plannings as $planning) {
+            $planning->suspend();
+        }
+    }
+
+    #endregion
 
     public static function boot(){
         parent::boot();

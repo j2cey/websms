@@ -6,12 +6,14 @@ use App\Traits\SmsImportFileTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use App\Traits\UuidTrait;
+use App\Traits\SuspendableTrait;
 
 /**
  * Class SmscampaignFile
  * @package App
  *
  * @property integer $id
+ * @property string $uuid
  *
  * @property string $name
  * @property boolean $imported
@@ -23,19 +25,23 @@ use App\Traits\UuidTrait;
  * @property integer|null $smsimport_status_id
  *
  * @property integer $nb_rows
- * @property integer $nb_rows_imported
+ * @property integer $nb_rows_success
  * @property integer $nb_rows_failed
+ * @property integer $nb_rows_processing
+ * @property integer $nb_rows_processed
  *
  * @property string $row_last_processed
  * @property integer $nb_try
  * @property string $report
+ *
+ * @property \Illuminate\Support\Carbon $suspended_at
  *
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
 class SmscampaignFile extends Model
 {
-    use SmsImportFileTrait, UuidTrait;
+    use SmsImportFileTrait, UuidTrait, SuspendableTrait;
 
     protected $guarded = [];
     protected $casts = [
@@ -53,7 +59,7 @@ class SmscampaignFile extends Model
 
     public function setStatus($save = true) {
 
-        $this->imported = ($this->nb_rows == ($this->nb_rows_imported + $this->nb_rows_failed));
+        $this->imported = ($this->nb_rows == ($this->nb_rows_success + $this->nb_rows_failed));
 
         if ($this->imported) {
             // Importation terminé
@@ -69,7 +75,7 @@ class SmscampaignFile extends Model
             }
             // Set End Date
             $this->setEnd(false);
-        } elseif (($this->nb_rows_imported + $this->nb_rows_failed) > 0) {
+        } elseif (($this->nb_rows_success + $this->nb_rows_failed) > 0) {
             // importation fichier(s) en cours
             $this->smsimport_status_id = SmsimportStatus::coded("2")->first()->id;
             // Set Start Date
@@ -110,7 +116,7 @@ class SmscampaignFile extends Model
         // Après chaque modification
         self::updated(function($model){
             // On met à jour le statut du planning parent
-            $model->planning->setStatus();
+            //$model->planning->setStatus();
         });
 
         // Avant creation

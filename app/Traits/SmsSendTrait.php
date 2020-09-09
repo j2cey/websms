@@ -37,6 +37,8 @@ trait SmsSendTrait
 
         $this->send_processing = true;
         $this->save();
+        // Add $nb_send_processing to smsresult
+        $planning->addSendResult(0, 1, 0, 0, 0);
 
         $report_msg = "";
         //$send_ok = $this->rawSend($from_rqst,$msg,$mobile_inter,$report_msg);
@@ -44,6 +46,9 @@ trait SmsSendTrait
 
         $this->send_processing = false;
         $this->save();
+
+        // Remove $nb_send_processing from smsresult
+        $planning->addSendResult(0, -1, 0, 0, 0);
 
         if ($send_ok) {
             $this->send_success = true;
@@ -57,6 +62,9 @@ trait SmsSendTrait
         $this->nb_try += 1;
         $this->sendingend_at = Carbon::now();
         $this->save();
+
+        // Add $nb_send_processed, $nb_send_success, $nb_send_failed to smsresult
+        $planning->addSendResult(0, 0, ($this->send_success ? 1 : 0), ($this->send_success ? 0 : 1), 1);
     }
 
     private function rawSend($from_rqst,$msg,$mobile_inter,&$report_msg) {

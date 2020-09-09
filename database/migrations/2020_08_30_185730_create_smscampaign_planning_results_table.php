@@ -35,6 +35,8 @@ class CreateSmscampaignPlanningResultsTable extends Migration
             $table->integer('nb_try')->default(0)->comment('nombre de tentative(s) de traitement');
             $table->json('report')->comment('rapport de traitement');
 
+            $table->timestamp('suspended_at')->nullable()->comment('date de suspension le cas échéant');
+
             $table->timestamps();
         });
     }
