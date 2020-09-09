@@ -51,7 +51,7 @@ trait SmscampaignTrait
                 $i++;
 
                 $nb_rows_curr = intval(exec("wc -l '" . $filename_full . "'"));
-                $new_file = SmscampaignFile::create([
+                SmscampaignFile::create([
                     'name' => $filename,
                     'smscampaign_planning_id' => $new_planning->id,
                     'nb_rows' => $nb_rows_curr,

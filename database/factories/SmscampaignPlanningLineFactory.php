@@ -2,10 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\SmscampaignPlanningResult;
+use App\SmscampaignPlanningLine;
 use Faker\Generator as Faker;
 
-$factory->define(SmscampaignPlanningResult::class, function (Faker $faker) {
+$factory->define(SmscampaignPlanningLine::class, function (Faker $faker) {
     return [
         //
     ];

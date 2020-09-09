@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class SmscampaignPlanningResultSeeder extends Seeder
+class SmscampaignPlanningLineSeeder extends Seeder
 {
     /**
      * Run the database seeds.

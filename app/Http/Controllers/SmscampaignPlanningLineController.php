@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\SmscampaignPlanningResult;
+use App\SmscampaignPlanningLine;
 use Illuminate\Http\Request;
 
-class SmscampaignPlanningResultController extends Controller
+class SmscampaignPlanningLineController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class SmscampaignPlanningResultController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\SmscampaignPlanningResult  $smscampaignPlanningResult
+     * @param  \App\SmscampaignPlanningLine  $smscampaignPlanningResult
      * @return \Illuminate\Http\Response
      */
-    public function show(SmscampaignPlanningResult $smscampaignPlanningResult)
+    public function show(SmscampaignPlanningLine $smscampaignPlanningResult)
     {
         //
     }
@@ -52,10 +52,10 @@ class SmscampaignPlanningResultController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\SmscampaignPlanningResult  $smscampaignPlanningResult
+     * @param  \App\SmscampaignPlanningLine  $smscampaignPlanningResult
      * @return \Illuminate\Http\Response
      */
-    public function edit(SmscampaignPlanningResult $smscampaignPlanningResult)
+    public function edit(SmscampaignPlanningLine $smscampaignPlanningResult)
     {
         //
     }
@@ -64,10 +64,10 @@ class SmscampaignPlanningResultController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SmscampaignPlanningResult  $smscampaignPlanningResult
+     * @param  \App\SmscampaignPlanningLine  $smscampaignPlanningResult
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SmscampaignPlanningResult $smscampaignPlanningResult)
+    public function update(Request $request, SmscampaignPlanningLine $smscampaignPlanningResult)
     {
         //
     }
@@ -75,10 +75,10 @@ class SmscampaignPlanningResultController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\SmscampaignPlanningResult  $smscampaignPlanningResult
+     * @param  \App\SmscampaignPlanningLine  $smscampaignPlanningResult
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SmscampaignPlanningResult $smscampaignPlanningResult)
+    public function destroy(SmscampaignPlanningLine $smscampaignPlanningResult)
     {
         //
     }

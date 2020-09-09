@@ -8,7 +8,7 @@ use App\Traits\UuidTrait;
 use App\Traits\SuspendableTrait;
 
 /**
- * Class SmscampaignPlanningResult
+ * Class SmscampaignPlanningLine
  * @package App
  *
  * @property integer $id
@@ -32,7 +32,7 @@ use App\Traits\SuspendableTrait;
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  */
-class SmscampaignPlanningResult extends Model
+class SmscampaignPlanningLine extends Model
 {
     use SmsSendTrait, UuidTrait, SuspendableTrait;
 

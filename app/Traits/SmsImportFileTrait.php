@@ -3,7 +3,7 @@
 
 namespace App\Traits;
 
-use App\SmscampaignPlanningResult;
+use App\SmscampaignPlanningLine;
 use App\SmscampaignReceiver;
 
 trait SmsImportFileTrait
@@ -20,9 +20,6 @@ trait SmsImportFileTrait
         $csvData = file_get_contents($raw_dir.'/'.$file_fullpath);
         $rows = array_map("str_getcsv", explode("\n", $csvData));
 
-        //dd($this->report);
-
-        //foreach ($rows as $row) {
         for ($i = 0; $i < $this->nb_rows; $i++) {
             $row_current = $i + 1;
             $row = $rows[$i];
@@ -62,7 +59,7 @@ trait SmsImportFileTrait
 
                 if ($row_parse_ok) {
                     // New planning result
-                    SmscampaignPlanningResult::create([
+                    SmscampaignPlanningLine::create([
                         'message' => $msg,
                         'smscampaign_planning_id' => $planning->id,
                         'smscampaign_receiver_id' => $receiver->id,

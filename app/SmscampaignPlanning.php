@@ -54,8 +54,8 @@ class SmscampaignPlanning extends Model
         return $this->belongsTo('App\SmsimportStatus', 'smsimport_status_id');
     }
 
-    public function results() {
-        return $this->hasMany('App\SmscampaignPlanningResult');
+    public function lines() {
+        return $this->hasMany('App\SmscampaignPlanningLine');
     }
 
     public function sendstatus() {

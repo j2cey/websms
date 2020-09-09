@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSmscampaignPlanningResultsTable extends Migration
+class CreateSmscampaignPlanningLinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSmscampaignPlanningResultsTable extends Migration
      */
     public function up()
     {
-        Schema::create('smscampaign_planning_results', function (Blueprint $table) {
+        Schema::create('smscampaign_planning_lines', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique()->comment('identifiant universel unique');
 
@@ -48,10 +48,10 @@ class CreateSmscampaignPlanningResultsTable extends Migration
      */
     public function down()
     {
-        Schema::table('smscampaign_planning_results', function (Blueprint $table) {
+        Schema::table('smscampaign_planning_lines', function (Blueprint $table) {
             $table->dropForeign(['smscampaign_planning_id']);
             $table->dropForeign(['smscampaign_receiver_id']);
         });
-        Schema::dropIfExists('smscampaign_planning_results');
+        Schema::dropIfExists('smscampaign_planning_lines');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidTrait;
 
 /**
- * Class SmscampaignPlanningResult
+ * Class SmscampaignPlanningLine
  * @package App
  *
  * @property integer $id
