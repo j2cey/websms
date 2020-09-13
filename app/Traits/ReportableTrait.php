@@ -21,7 +21,11 @@ trait ReportableTrait
          *      3 => nombre de ligne(s) affectée(s)
          * ]
          */
-        if (empty($this->report)) {
+        if ( empty($msg) ) {
+          $msg = "EMPTY REPORT MSG";
+        }
+
+        if ( empty($this->report) ) {
             $this->report = json_encode([ [[$row_current],$result,$msg,1],]);
         } else {
             $report_tab = json_decode($this->report);

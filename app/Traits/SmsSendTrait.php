@@ -99,8 +99,7 @@ trait SmsSendTrait
             // Send
             $smpp->sendSMS($from,$to,$encodedMessage);
 
-            /*$this->stat_failed = false;
-            $this->stat_success = true;*/
+            $send_ok = true;
 
             // Close connection
             $smpp->close();
