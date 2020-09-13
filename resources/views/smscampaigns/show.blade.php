@@ -58,9 +58,9 @@
 
                             <h6 class="mt-0 font-12">
                                 <button type="button" class="btn waves-effect btn-sm">
-                                    <a href="#" alt="Liste Importations" title="Liste Importations">
+                                    <a href="{{ action('SmscampaignFileController@index', 'campaign_id='.$smscampaign->id) }}" alt="Liste Importations" title="Liste Importations">
                                         Importation
-                                        <i class="fa fa-file-code-o"></i>
+                                        <i class="fa fa-server"></i>
                                     </a>
                                 </button>
                             </h6>
@@ -89,7 +89,7 @@
 
                             <h6 class="mt-0 font-12">
                                 <button type="button" class="btn waves-effect btn-sm">
-                                    <a href="#" alt="Liste Importations" title="Liste Importations">
+                                    <a href="{{ action('SmscampaignPlanningLineController@index', 'campaign_id='.$smscampaign->id) }}" alt="Liste Importations" title="Liste Importations">
                                         Envoie <i class="fa fa-paper-plane-o"></i></a>
                                 </button>
                             </h6>

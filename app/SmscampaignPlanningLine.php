@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\SmsSendTrait;
 use App\Traits\UuidTrait;
 use App\Traits\SuspendableTrait;
+use Illuminate\Support\Carbon;
 
 /**
  * Class SmscampaignPlanningLine
@@ -49,6 +50,41 @@ class SmscampaignPlanningLine extends Model
     public function receiver() {
         return $this->belongsTo('App\SmscampaignReceiver','smscampaign_receiver_id');
     }
+
+    #region Scopes
+
+    public function scopeSearch($query,$campaign_id,$treatmentresult,$dt_deb,$dt_fin) {
+        if ($campaign_id == null && ($dt_deb == null || $dt_fin == null) && $treatmentresult == null) return $query;
+
+        if (!($campaign_id == null)) {
+            $planning_ids = SmscampaignPlanning::where('smscampaign_id', $campaign_id)->pluck('id');
+            $query->whereIn('smscampaign_planning_id', $planning_ids);
+        }
+
+        if (!($treatmentresult == null)) {
+            //$query->whereIn('smsimport_status_id', $treatmentresult);
+            if (in_array("0", $treatmentresult)) {
+                // élément non traité
+                $query->where('send_processed', 0);
+            }
+            if (in_array("-1", $treatmentresult)) {
+                // échec de traitement
+                $query->where('send_processed', 1)->where('send_success', 0);
+            }
+            if (in_array("1", $treatmentresult)) {
+                // succès de traitement
+                $query->where('send_processed', 1)->where('send_success', 1);
+            }
+        }
+
+        if ( (!($dt_deb == null)) && (!($dt_fin == null)) ) {
+            $query->whereBetween('created_at', [Carbon::createFromFormat('d/m/Y', $dt_deb)->format('Y-m-d'),Carbon::createFromFormat('d/m/Y', $dt_fin)->format('Y-m-d')]);
+        }
+
+        return $query;
+    }
+
+    #endregion
 
     // Simple debug callback
     public function printDebug($str) {

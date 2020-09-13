@@ -13,10 +13,10 @@
 <td>{{ $currval->description }}</td>
 <td>{{ $currval->message }}</td>
 <td>
-    @include('smscampaigns.status_display', ['status' => $currval->importstatus])
+    @include('smscampaignstatus.status_display', ['status' => $currval->importstatus])
     {{ $currval->smsresult->nb_import_success ?? '0' }} / {{ $currval->smsresult->nb_to_import ?? '0' }}
 </td>
 <td>
-    @include('smscampaigns.status_display', ['status' => $currval->sendstatus])
+    @include('smscampaignstatus.status_display', ['status' => $currval->sendstatus])
     {{ $currval->smsresult->nb_send_success ?? '0' }} / {{ $currval->smsresult->nb_to_send ?? '0' }}
 </td>

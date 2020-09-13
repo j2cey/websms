@@ -82,4 +82,12 @@ class SmstreatmentResultController extends Controller
     {
         //
     }
+
+    public function selectmoretreatmentresults(Request $request)
+    {
+        $search = $request->get('search');
+        $data = SmstreatmentResult::select(['code', 'titre'])
+            ->where('titre', 'like', '%' . $search . '%')->orderBy('titre')->paginate(5);
+        return response()->json(['items' => $data->toArray()['data'], 'pagination' => $data->nextPageUrl() ? true : false]);
+    }
 }

@@ -49,6 +49,8 @@ class SmscampaignFile extends Model
     ];
     public function getRouteKeyName() { return 'uuid'; }
 
+    #region Eloquent Relations
+
     public function planning() {
         return $this->belongsTo('App\SmscampaignPlanning', 'smscampaign_planning_id');
     }
@@ -56,6 +58,45 @@ class SmscampaignFile extends Model
     public function importstatus() {
         return $this->belongsTo('App\SmsimportStatus', 'smsimport_status_id');
     }
+
+    #endregion
+
+    #region Scopes
+
+    public function scopeSearch($query,$campaign_id,$treatmentresult,$dt_deb,$dt_fin) {
+        if ($campaign_id == null && ($dt_deb == null || $dt_fin == null) && $treatmentresult == null) return $query;
+
+        if (!($campaign_id == null)) {
+            $planning_ids = SmscampaignPlanning::where('smscampaign_id', $campaign_id)->pluck('id');
+            $query->whereIn('smscampaign_planning_id', $planning_ids);
+        }
+
+        if (!($treatmentresult == null)) {
+            //$query->whereIn('smsimport_status_id', $treatmentresult);
+            if (in_array("0", $treatmentresult)) {
+                // élément non traité
+                $query->where('imported', 0);
+            }
+            if (in_array("-1", $treatmentresult)) {
+                // échec de traitement
+                $query->where('nb_rows_failed', '>', 0);
+            }
+            if (in_array("1", $treatmentresult)) {
+                // succès de traitement
+                $query->where('nb_rows_success', '>', 0);
+            }
+        }
+
+        if ( (!($dt_deb == null)) && (!($dt_fin == null)) ) {
+            $query->whereBetween('created_at', [Carbon::createFromFormat('d/m/Y', $dt_deb)->format('Y-m-d'),Carbon::createFromFormat('d/m/Y', $dt_fin)->format('Y-m-d')]);
+        }
+
+        return $query;
+    }
+
+    #endregion
+
+    #region Customs Functions
 
     public function setStatus($save = true) {
 
@@ -109,6 +150,16 @@ class SmscampaignFile extends Model
             $this->save();
         }
     }
+
+    public function getImportPercentage() {
+        if ($this->nb_rows > 0) {
+            return round(($this->nb_rows_processed / $this->nb_rows) * 100, 0);
+        } else {
+            return 0;
+        }
+    }
+
+    #endregion
 
     public static function boot(){
         parent::boot();
