@@ -26,6 +26,16 @@ class SmscampaignType extends Model
     protected $guarded = [];
     public function getRouteKeyName() { return 'uuid'; }
 
+    #region Scopes
+
+    public function scopeCoded($query, $code) {
+        return $query
+            ->where('code', $code)
+            ;
+    }
+
+    #endregion
+
     public static function boot(){
         parent::boot();
 
