@@ -6,6 +6,7 @@ use App\Http\Requests\Smscampaign\CreateSmscampaignRequest;
 use App\Http\Requests\Smscampaign\UpdateSmscampaignRequest;
 use App\Smscampaign;
 use App\SmscampaignFile;
+use App\SmscampaignType;
 use App\SmsimportStatus;
 use App\SmssendStatus;
 use Illuminate\Http\Request;
@@ -97,7 +98,7 @@ class SmscampaignController extends Controller
     public function create()
     {
         $smscampaign = new Smscampaign();
-        $smscampaign_types = DB::table('smscampaign_types')->get()->pluck('titre', 'id');
+        $smscampaign_types = DB::table('smscampaign_types')->get()->pluck('titre', 'code');
 
         $nowdate = Carbon::now();
 
@@ -130,7 +131,7 @@ class SmscampaignController extends Controller
             'separateur_colonnes' => $formInput['separateur_colonnes'],
             'smsimport_status_id' => SmsimportStatus::coded("0")->first()->id,
             'smssend_status_id' => SmssendStatus::coded("0")->first()->id,
-            'smscampaign_type_id' => $formInput['smscampaign_type_id'],
+            'smscampaign_type_id' => SmscampaignType::coded($formInput['smscampaign_type_code'])->first()->id,
             'user_id' => $user->id,
         ]);
 
@@ -163,7 +164,7 @@ class SmscampaignController extends Controller
      */
     public function edit(Smscampaign $smscampaign)
     {
-        $smscampaign_types = DB::table('smscampaign_types')->get()->pluck('titre', 'id');
+        $smscampaign_types = DB::table('smscampaign_types')->get()->pluck('titre', 'code');
 
         $nowdate = Carbon::now();
 
@@ -189,7 +190,7 @@ class SmscampaignController extends Controller
             'message' => $formInput['message'],
             'description' => $formInput['description'],
             'separateur_colonnes' => $formInput['separateur_colonnes'],
-            'smscampaign_type_id' => $formInput['smscampaign_type_id'],
+            'smscampaign_type_id' => SmscampaignType::coded($formInput['smscampaign_type_code'])->first()->id,
         ]);
 
         if ($request->hasFile('fichier_destinataires')) {

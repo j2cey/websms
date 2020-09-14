@@ -6,15 +6,15 @@
     </div>
 </div>
 
-<div class="form-group row {{ $errors->has('smscampaign_type_id') ? 'has-error' : '' }}">
-    <label class="col-sm-2 col-form-label"for="smscampaign_type_id">Type</label>
+<div class="form-group row {{ $errors->has('smscampaign_type_code') ? 'has-error' : '' }}">
+    <label class="col-sm-2 col-form-label"for="smscampaign_type_code">Type</label>
     <div class="col-sm-10">
-        <select name="smscampaign_type_id" class="smscampaign_type_id form-control" id="smscampaign_type_id" required>
-            @foreach($smscampaign_types as $id => $display)
-                <option value="{{ $id }}" {{ (isset($smscampaign->smscampaign_type_id) && $id === $smscampaign->smscampaign_type_id) ? 'selected' : '' }}>{{ $display }}</option>
+        <select name="smscampaign_type_code" class="smscampaign_type_code form-control" id="smscampaign_type_code" required>
+            @foreach($smscampaign_types as $code => $display)
+                <option value="{{ $code }}" {{ (isset($smscampaign->type) && $code === $smscampaign->type->code) ? 'selected' : '' }}>{{ $display }}</option>
             @endforeach
         </select>
-        <small class="text-danger">{{ $errors->has('smscampaign_type_id') ? $errors->first('smscampaign_type_id') : '' }}</small>
+        <small class="text-danger">{{ $errors->has('smscampaign_type_code') ? $errors->first('smscampaign_type_code') : '' }}</small>
     </div>
 </div>
 
