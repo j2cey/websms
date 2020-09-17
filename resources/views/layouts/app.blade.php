@@ -49,6 +49,8 @@
 <div class="wrapper">
     <div class="container-fluid">
 
+        <div id="app">
+
         <!-- Page-Title -->
         <div class="row">
             <div class="col-sm-12">
@@ -69,8 +71,8 @@
         <!-- end page title end breadcrumb -->
 
     @yield('content')
+        </div> <!-- end app vuejs -->
     <!-- end row -->
-
     </div> <!-- end container -->
 </div>
 <!-- end wrapper -->
@@ -129,6 +131,7 @@
 <script src="{{asset('assets/pages/form-advanced.js')}}"></script>
 
 <!-- App js -->
+<script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('assets/js/app.js')}}"></script>
 
 @yield('js')
