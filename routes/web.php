@@ -18,7 +18,15 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 //Route::get('/', 'DashboardController@index')->middleware('auth');
-Route::get('/', 'SmscampaignController@index')->middleware('auth');
+
+Route::get('/', function () {
+    if (Auth::check()) {
+        return view('admin01');
+    }
+    return redirect('/login');
+});
+
+//Route::get('/', 'SmscampaignController@index')->middleware('auth');
 Route::get('/test', 'SmscampaignController@testfunction')->middleware('auth');
 
 Auth::routes();
