@@ -80,6 +80,12 @@ class SmscampaignPlanning extends Model
         ]);
     }
 
+    public function resetFailedLinesCursor() {
+        $this->lines()->where('send_success', 0)->update([
+            'send_processed' => 0,
+        ]);
+    }
+
     public function suspend() {
         // Suspend all files
         foreach ($this->files as $file) {

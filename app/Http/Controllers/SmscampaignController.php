@@ -199,8 +199,10 @@ class SmscampaignController extends Controller
             $smscampaign->addFile( $fullpathfile, ($request->has('premiere_ligne_entete')) );
         }
 
-        // Réinitialiser le curseur des planifications ayant des failed
-        $smscampaign->resetFailedPlanningsCursor();
+        // Réinitialiser le curseur des fichiers ayant des failed
+        $smscampaign->resetFailedFilesCursor();
+        // Réinitialiser le curseur des envois ayant des failed
+        $smscampaign->resetFailedLinesCursor();
 
         // Sessions Message
         $request->session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' modifiée avec Succès.");

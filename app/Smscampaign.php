@@ -165,9 +165,15 @@ class Smscampaign extends Model
         $this->plannings()->update(['current' => 0]);
     }
 
-    public function resetFailedPlanningsCursor() {
+    public function resetFailedFilesCursor() {
         foreach ($this->plannings as $planning) {
             $planning->resetFailedFilesCursor();
+        }
+    }
+
+    public function resetFailedLinesCursor() {
+        foreach ($this->plannings as $planning) {
+            $planning->resetFailedLinesCursor();
         }
     }
 
