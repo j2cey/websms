@@ -68,7 +68,7 @@ trait SmsSendTrait
     }
 
     private function rawSend($from_rqst,$msg,$mobile_inter,&$report_msg) {
-        $this->stat_failed = true;
+        //$this->stat_failed = true;
         try {
             // Construct transport and client, customize settings
             $transport = new TSocket(config('app.SMPP_HOST'),2775,false,[$this, 'printDebug']); // hostname/ip (ie. localhost) and port (ie. 2775)
@@ -100,14 +100,14 @@ trait SmsSendTrait
             $smpp->sendSMS($from,$to,$encodedMessage);
 
             $send_ok = true;
-            $this->stat_failed = false;
+            //$this->stat_failed = false;
 
             // Close connection
             $smpp->close();
 
         } catch (Exception $e) {
             // Try to unbind
-            $this->stat_failed = true;
+            //$this->stat_failed = true;
             $send_ok = false;
             try {
                 $smpp->close();
