@@ -396,7 +396,7 @@ class SmppClient
     protected function parseSMS(SmppPdu $pdu)
     {
         // Check command id
-        if($pdu->id != SMPP::DELIVER_SM) throw new InvalidArgumentException('PDU is not an received SMS');
+        if($pdu->id != SMPP::DELIVER_SM) throw new \InvalidArgumentException('PDU is not an received SMS');
 
         // Unpack PDU
         $ar=unpack("C*",$pdu->body);
@@ -640,7 +640,7 @@ class SmppClient
     protected function parseTag(&$ar)
     {
         $unpackedData = unpack('nid/nlength',pack("C2C2",next($ar),next($ar),next($ar),next($ar)));
-        if (!$unpackedData) throw new InvalidArgumentException('Could not read tag data');
+        if (!$unpackedData) throw new \InvalidArgumentException('Could not read tag data');
         extract($unpackedData);
 
         // Sometimes SMSC return an extra null byte at the end
@@ -939,7 +939,7 @@ class SmppDeliveryReceipt extends SmppSms
     {
         $numMatches = preg_match('/^id:([^ ]+) sub:(\d{1,3}) dlvrd:(\d{3}) submit date:(\d{10}) done date:(\d{10}) stat:([A-Z]{7}) err:(\d{3}) text:(.*)$/ms', $this->message, $matches);
         if ($numMatches == 0) {
-            throw new InvalidArgumentException('Could not parse delivery receipt: '.$this->message."\n".bin2hex($this->body));
+            throw new \InvalidArgumentException('Could not parse delivery receipt: '.$this->message."\n".bin2hex($this->body));
         }
         list($matched, $this->id, $this->sub, $this->dlvrd, $this->submitDate, $this->doneDate, $this->stat, $this->err, $this->text) = $matches;
 
@@ -1040,8 +1040,8 @@ class SmppAddress
     public function __construct($value,$ton=SMPP::TON_UNKNOWN,$npi=SMPP::NPI_UNKNOWN)
     {
         // Address-Value field may contain 10 octets (12-length-type), see 3GPP TS 23.040 v 9.3.0 - section 9.1.2.5 page 46.
-        if ($ton == SMPP::TON_ALPHANUMERIC && strlen($value) > 11) throw new InvalidArgumentException('Alphanumeric address may only contain 11 chars');
-        if ($ton == SMPP::TON_INTERNATIONAL && $npi == SMPP::NPI_E164 && strlen($value) > 15) throw new InvalidArgumentException('E164 address may only contain 15 digits');
+        if ($ton == SMPP::TON_ALPHANUMERIC && strlen($value) > 11) throw new \InvalidArgumentException('Alphanumeric address may only contain 11 chars');
+        if ($ton == SMPP::TON_INTERNATIONAL && $npi == SMPP::NPI_E164 && strlen($value) > 15) throw new \InvalidArgumentException('E164 address may only contain 15 digits');
 
         $this->value = (string) $value;
         $this->ton = $ton;
