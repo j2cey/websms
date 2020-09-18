@@ -68,7 +68,7 @@ trait SmsSendTrait
     }
 
     private function rawSend($from_rqst,$msg,$mobile_inter,&$report_msg) {
-        $send_ok = false;
+        $this->stat_failed = true;
         try {
             // Construct transport and client, customize settings
             $transport = new TSocket(config('app.SMPP_HOST'),2775,false,[$this, 'printDebug']); // hostname/ip (ie. localhost) and port (ie. 2775)
@@ -100,6 +100,7 @@ trait SmsSendTrait
             $smpp->sendSMS($from,$to,$encodedMessage);
 
             $send_ok = true;
+            $this->stat_failed = false;
 
             // Close connection
             $smpp->close();
@@ -107,6 +108,7 @@ trait SmsSendTrait
         } catch (Exception $e) {
             // Try to unbind
             $this->stat_failed = true;
+            $send_ok = false;
             try {
                 $smpp->close();
                 $report_msg = $e->getMessage();
@@ -117,11 +119,13 @@ trait SmsSendTrait
                 $report_msg = $ue->getMessage();
                 if ($transport->isOpen()) $transport->close();
                 //$this->save();
+                return $send_ok;
             }
             //$this->save();
             // Rethrow exception, now we are unbound or transport is closed
             //CustomLog::logEnd($logfile, $starttime_gbl, $e->getMessage());
-            throw $e;
+            //throw $e;
+            return $send_ok;
         }
 
         return $send_ok;
