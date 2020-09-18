@@ -14,7 +14,7 @@ let routes = [
 
 
 export default new VueRouter({
-    base: '/websms/',
+    base: '/',
     mode: 'history',
     routes,
     linkActiveClass: 'active'
