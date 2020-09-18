@@ -46,6 +46,8 @@ class SmscampaignController extends Controller
      */
     public function index(Request $request)
     {
+        return Smscampaign::all();
+
         $recherche_cols = ['id', 'title', 'sendername', 'descript'];
 
         $sortBy = 'id';
