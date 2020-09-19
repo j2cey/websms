@@ -14,6 +14,27 @@ import VueRouter from "vue-router";
 window.Vue = Vue;
 Vue.use(VueRouter);
 
+// Windows Notify
+window.events = new Vue();
+
+window.noty = function(notification) {
+    window.events.$emit('notification', notification)
+}
+
+window.handleErrors = function(error) {
+    if(error.response.status == 422) {
+        window.noty({
+            message: 'Vous avez des erreurs de validation. Veuillez réessayer.',
+            type: 'danger'
+        })
+    }
+
+    window.noty({
+        message: 'Quelque chose a mal tourné. Veuillez rafraîchir la page.',
+        type: 'danger'
+    })
+}
+
 import Form from "./utilities/Form";
 window.Form = Form;
 

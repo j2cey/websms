@@ -25,6 +25,7 @@ class CreateSmsresultsTable extends Migration
             $table->integer('nb_import_success')->default(0)->comment('nombre total de lignes importees avec succès');
             $table->integer('nb_import_failed')->default(0)->comment('nombre total de lignes echouees');
             $table->integer('nb_import_processed')->default(0)->comment('nombre d\'importation(s) effectuée(s)');
+            $table->integer('import_rate')->default(0)->comment('pourcentage d\'importation(s) effectuée(s)');
 
             $table->timestamp('sendingstart_at')->nullable()->comment('date début de l\'envoi ');
             $table->timestamp('sendingend_at')->nullable()->comment('date fin de l\'envoi ');
@@ -34,6 +35,7 @@ class CreateSmsresultsTable extends Migration
             $table->integer('nb_send_success')->default(0)->comment('nombre de sms envoyés avec succès');
             $table->integer('nb_send_failed')->default(0)->comment('nombre de sms dont l envoie a échoué');
             $table->integer('nb_send_processed')->default(0)->comment('nombre de traitement(s) effectué(s)');
+            $table->integer('send_rate')->default(0)->comment('pourcentage de traitement(s) effectué(s)');
 
             $table->timestamps();
         });

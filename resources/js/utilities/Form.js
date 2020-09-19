@@ -62,7 +62,7 @@ class Form {
      * .
      * @param {string} url
      */
-    put(url) {
+    put(url, fd) {
         return this.submit('put', url);
     }
 
@@ -94,7 +94,7 @@ class Form {
      * @param {string} url
      */
     submit(requestType, url, fd) {
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        //axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         //axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
         if (typeof fd !== 'undefined') {

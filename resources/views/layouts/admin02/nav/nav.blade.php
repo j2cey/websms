@@ -18,20 +18,12 @@
                         <i class="nav-icon fas fa-tachometer-alt"></i> Dashboard
                     </router-link>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Contact</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Campagne SMS</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                         <li class="nav-item">
                             <router-link tag="a" to="/smscampaigns" class="nav-link">
                                 <i class="fas fa-send"></i> Liste
-                            </router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link tag="a" to="/smscampaigns/create" class="nav-link">
-                                <i class="fas fa-send"></i> Nouvelle
                             </router-link>
                         </li>
                         <!-- End Level two -->

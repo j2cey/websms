@@ -26,12 +26,19 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::get('/home', function () {
+    if (Auth::check()) {
+        return view('admin02');
+    }
+    return redirect('/login');
+});
+
 //Route::get('/', 'SmscampaignController@index')->middleware('auth');
 Route::get('/test', 'SmscampaignController@testfunction')->middleware('auth');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('smscampaigntypes','SmscampaignTypeController')->middleware('auth');
 Route::resource('smscampaigns','SmscampaignController')->middleware('auth');

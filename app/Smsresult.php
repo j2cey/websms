@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property integer $nb_import_success
  * @property integer $nb_import_failed
  * @property integer $nb_import_processed
+ * @property integer $import_rate
  *
  * @property Carbon $sendingstart_at
  * @property Carbon $sendingend_at
@@ -28,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property integer $nb_send_success
  * @property integer $nb_send_failed
  * @property integer $nb_send_processed
+ * @property integer $send_rate
  *
  * @property Carbon $created_at
  * @property Carbon $updated_at

@@ -38,6 +38,15 @@ trait SmsResultTrait
 
         $this->setStatus(true);
 
+        // Import rate
+        if ($this->smsresult && ($this->smsresult->nb_to_import > 0)) {
+            $this->smsresult->update([
+                'import_rate' => round((($this->smsresult->nb_import_processed) / $this->smsresult->nb_to_import) * 100, 0)
+            ]);
+        } else {
+            $this->smsresult->update([ 'import_rate' => 0 ]);
+        }
+
         // si l'appellant est un planning, on met à jour la partie importation de son smsresult de sa campagne parente
         if (isset($this->campaign)) {
             $this->campaign->addImportResult($nb_to_import, $nb_import_processing, $nb_import_success, $nb_import_failed, $nb_import_processed);
@@ -74,6 +83,15 @@ trait SmsResultTrait
         }
 
         $this->setStatus(true);
+
+        // Send Rate
+        if ($this->smsresult && ($this->smsresult->nb_to_send > 0)) {
+            $this->smsresult->update([
+                'send_rate' => round(($this->smsresult->nb_send_processed / $this->smsresult->nb_to_send) * 100, 0)
+            ]);
+        } else {
+            $this->smsresult->update([ 'send_rate' => 0 ]);
+        }
 
         // si l'appellant est un planning, on met à jour la partie envoie de son smsresult de sa campagne parente
         if (isset($this->campaign)) {

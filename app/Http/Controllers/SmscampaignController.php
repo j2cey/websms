@@ -46,7 +46,9 @@ class SmscampaignController extends Controller
      */
     public function index(Request $request)
     {
-        return Smscampaign::all();
+        $smscampaigns = Smscampaign::all();
+        $smscampaigns->load(['type', 'smsresult']);
+        return $smscampaigns;
 
         $recherche_cols = ['id', 'title', 'sendername', 'descript'];
 
@@ -120,8 +122,6 @@ class SmscampaignController extends Controller
     {
         $user = auth()->user();
 
-        //dd(request()->file('fichier_destinataires'), $request);
-
         //get file from upload
         $fullpathfile = request()->file('fichier_destinataires')->getRealPath();
 
@@ -135,16 +135,18 @@ class SmscampaignController extends Controller
             'separateur_colonnes' => $formInput['separateur_colonnes'],
             'smsimport_status_id' => SmsimportStatus::coded("0")->first()->id,
             'smssend_status_id' => SmssendStatus::coded("0")->first()->id,
-            'smscampaign_type_id' => SmscampaignType::coded($formInput['smscampaign_type_code'])->first()->id,
+            'smscampaign_type_id' => SmscampaignType::coded($formInput['type'])->first()->id,
             'user_id' => $user->id,
         ]);
 
         $new_smscampaign->addFile( $fullpathfile, ($request->has('premiere_ligne_entete')) );
 
         // Sessions Message
-        $request->session()->flash('msg_success',"Campagne créée avec Succès.");
+        //$request->session()->flash('msg_success',"Campagne créée avec Succès.");
 
-        return redirect()->action('SmscampaignController@index');
+        //return redirect()->action('SmscampaignController@index');
+
+        return $new_smscampaign->load(['type', 'smsresult']);
     }
 
     /**
@@ -194,7 +196,7 @@ class SmscampaignController extends Controller
             'message' => $formInput['message'],
             'description' => $formInput['description'],
             'separateur_colonnes' => $formInput['separateur_colonnes'],
-            'smscampaign_type_id' => SmscampaignType::coded($formInput['smscampaign_type_code'])->first()->id,
+            'smscampaign_type_id' => SmscampaignType::coded($formInput['type'])->first()->id,
         ]);
 
         if ($request->hasFile('fichier_destinataires')) {
@@ -209,9 +211,11 @@ class SmscampaignController extends Controller
         $smscampaign->resetFailedLinesCursor();
 
         // Sessions Message
-        $request->session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' modifiée avec Succès.");
+        //$request->session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' modifiée avec Succès.");
 
-        return redirect()->action('SmscampaignController@index');
+        //return redirect()->action('SmscampaignController@index');
+
+        return $smscampaign->load(['type', 'smsresult']);
     }
 
     /**
@@ -226,9 +230,11 @@ class SmscampaignController extends Controller
         $smscampaign->suspend();
         // Puis on la supprime (soft)
         $smscampaign->delete();
-        session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' supprimée avec Succès.");
+        //session()->flash('msg_success',"Campagne '" . $smscampaign->titre . "' supprimée avec Succès.");
 
-        return redirect()->action('SmscampaignController@index');
+        //return redirect()->action('SmscampaignController@index');
+
+        return response()->json(['status' => 'ok'], 200);
     }
 
     public function importcampaignfiles() {

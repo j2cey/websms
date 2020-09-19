@@ -81,9 +81,9 @@ class Smscampaign extends Model
     public static function defaultRules() {
         return [
             'titre' => 'required',
-            'smscampaign_type_code' => 'required',
+            'type' => 'required',
             'expediteur' => 'required',
-            'message'  => 'required_unless:smscampaign_type_code,1'
+            'message'  => 'required_unless:type,1'
         ];
     }
     public static function createRules() {

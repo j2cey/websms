@@ -93,7 +93,7 @@ class SmscampaignPlanning extends Model
         }
 
         // Suspend all sends
-        foreach ($this->results as $result) {
+        foreach ($this->lines as $result) {
             $result->suspend();
         }
     }
