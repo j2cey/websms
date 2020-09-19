@@ -33,6 +33,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::resource('smscampaigntypes','SmscampaignTypeController')->middleware('auth');
 Route::resource('smscampaigns','SmscampaignController')->middleware('auth');
 Route::resource('smscampaignfiles','SmscampaignFileController')->middleware('auth');//--model=Usuario2
 Route::resource('smscampaignplanninglines','SmscampaignPlanningLineController')->middleware('auth');

@@ -16,7 +16,6 @@ class Form {
         this.errors = new Errors();
     }
 
-
     /**
      * Fetch all relevant data for the form.
      */
@@ -28,6 +27,11 @@ class Form {
         }
 
         return data;
+    }
+
+    append(field, val) {
+        //formData.append('file', this.file);
+        this.data[field] = val;
     }
 
 
@@ -48,8 +52,8 @@ class Form {
      * .
      * @param {string} url
      */
-    post(url) {
-        return this.submit('post', url);
+    post(url, fd) {
+        return this.submit('post', url, fd);
     }
 
 
@@ -89,9 +93,20 @@ class Form {
      * @param {string} requestType
      * @param {string} url
      */
-    submit(requestType, url) {
+    submit(requestType, url, fd) {
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        //axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+
+        if (typeof fd !== 'undefined') {
+            for (let property in this.originalData) {
+                fd.append(property, this[property]);
+            }
+        } else {
+            fd = this.data();
+        }
+
         return new Promise((resolve, reject) => {
-            axios[requestType](url, this.data())
+            axios[requestType](url, fd)
                 .then(response => {
                     this.onSuccess(response.data);
 

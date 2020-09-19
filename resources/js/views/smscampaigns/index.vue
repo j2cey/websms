@@ -28,9 +28,7 @@
                     <div class="card-header">
                         <div class="form-inline float-left">
                             <span class="help-inline pr-1"> Liste des Campagnes </span>
-                            <router-link tag="a" to="/smscampaigns/create" class="nav-link">
-                                <button class="btn btn-xs btn-primary">Nouvelle</button>
-                            </router-link>
+                            <button class="btn btn-xs btn-primary" @click="createNewCampaign()">Nouvelle</button>
                         </div>
 
                         <div class="card-tools">
@@ -79,13 +77,18 @@
         </section>
         <!-- /.content -->
 
+        <AddUpdateCampaign></AddUpdateCampaign>
     </div>
 
 </template>
 
 <script>
+    import AddUpdateCampaign from './addupdate'
     export default {
         name: "index",
+        components: {
+            AddUpdateCampaign
+        },
         data() {
             return {
                 campaigns: []
@@ -94,8 +97,12 @@
         created() {
             axios.get('/smscampaigns')
                 .then(({data}) => this.campaigns = data);
-            console.log(this.campaigns);
         },
+        methods: {
+            createNewCampaign() {
+                this.$emit('create_new_campaign')
+            },
+        }
     }
 </script>
 

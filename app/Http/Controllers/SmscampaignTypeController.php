@@ -14,7 +14,7 @@ class SmscampaignTypeController extends Controller
      */
     public function index()
     {
-        //
+        return SmscampaignType::all();
     }
 
     /**

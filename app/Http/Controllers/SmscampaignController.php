@@ -120,6 +120,8 @@ class SmscampaignController extends Controller
     {
         $user = auth()->user();
 
+        //dd(request()->file('fichier_destinataires'), $request);
+
         //get file from upload
         $fullpathfile = request()->file('fichier_destinataires')->getRealPath();
 
