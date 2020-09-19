@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Smscampaign;
-use App\SmscampaignPlanning;
+use App\Events\SmsresultEvent;
 use App\SmscampaignPlanningLine;
-use App\SmscampaignReceiver;
 use Illuminate\Console\Command;
 
 class SmscampaignSend extends Command
@@ -42,20 +40,20 @@ class SmscampaignSend extends Command
     public function handle()
     {
         $max_to_send = 45;
-        $planningresult_lines = SmscampaignPlanningLine::where('send_processed', 0)->whereNull('suspended_at')->take($max_to_send)->get();
+        $planning_lines = SmscampaignPlanningLine::where('send_processed', 0)->where('send_processing', 0)->whereNull('suspended_at')->with('planning')->take($max_to_send)->get();
 
         \Log::info("Cron en cours de traitement...");
 
         $nb_done = 0;
         $nb_done_all = 0;
-        foreach ($planningresult_lines as $planningresult_line) {
+        foreach ($planning_lines as $planning_line) {
             if ($nb_done >= 15) {
                 // sleep for 20 seconds
                 sleep(20);
                 $nb_done = 0;
             }
 
-            $planningresult_line->sendSms();
+            $planning_line->sendSms();
             $nb_done += 1;
             $nb_done_all += 1;
         }

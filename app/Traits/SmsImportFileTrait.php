@@ -3,6 +3,8 @@
 
 namespace App\Traits;
 
+use App\Events\SmsresultEvent;
+use App\Smscampaign;
 use App\SmscampaignPlanningLine;
 use App\SmscampaignReceiver;
 
@@ -11,6 +13,10 @@ trait SmsImportFileTrait
     use ReportableTrait;
     // SmscampaignFile $campaignfile
     public function importToPlannig() {
+
+        // mark as processing
+        $this->update(['import_processing' => 1]);
+
         $pendingfiles_dir = config('app.smscampaigns_filesfolder');
         $raw_dir = config('app.RAW_FOLDER');
         $file_fullpath = $pendingfiles_dir.'/'.$this->name;
@@ -81,10 +87,15 @@ trait SmsImportFileTrait
 
                 // MAJ du SmscampaingFile
                 $this->row_last_processed = $row_current;
+
+                $campaign_forevent = Smscampaign::where('id', $planning->smscampaign_id)->first();
+                event(new SmsresultEvent($campaign_forevent,$planning->campaign->smsresult));
             }
             $this->setStatus();
         }
         $this->nb_try += 1;
+        // unmark as processing
+        $this->import_processing = 0;
         $this->save();
     }
 

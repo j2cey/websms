@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\SmsresultEvent;
 use App\SmscampaignFile;
 use Illuminate\Console\Command;
 
@@ -38,12 +39,13 @@ class SmscampaignImportfiles extends Command
      */
     public function handle()
     {
-        $file_to_import = SmscampaignFile::where('imported', 0)->whereNull('suspended_at')->first();
+        $file_to_import = SmscampaignFile::where('imported', 0)->where('import_processing', 0)->whereNull('suspended_at')->with('planning')->first();
 
         \Log::info("smscampaign:importfiles en cours de traitement...");
 
         if ($file_to_import) {
             $file_to_import->importToPlannig();
+            //event(new SmsresultEvent($file_to_import->planning->campaign->smsresult));
             $this->info('smscampaign:importfiles execute avec succes! 1 fichier traité.');
         } else {
             $this->info('Aucun fichier a traiter.');

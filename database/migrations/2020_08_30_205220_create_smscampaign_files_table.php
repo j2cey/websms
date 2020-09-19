@@ -23,6 +23,7 @@ class CreateSmscampaignFilesTable extends Migration
 
             $table->string('name')->comment('nom du fichier');
             $table->boolean('imported')->default(false)->comment('determine si le fichier a deja ete importe dans la BD');
+            $table->boolean('import_processing')->default(false)->comment('determine si le fichier est en cours de traitement');
             $table->timestamp('suspended_at')->nullable()->comment('date de suspension le cas échéant');
 
             $table->timestamp('importstart_at')->nullable()->comment('date de debut d importation dans la BD');

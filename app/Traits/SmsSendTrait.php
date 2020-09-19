@@ -4,6 +4,8 @@
 namespace App\Traits;
 
 
+use App\Events\SmsresultEvent;
+use App\Smscampaign;
 use App\Traits\SMS\protocol\SmppClient;
 use App\Traits\SMS\protocol\GsmEncoder;
 use App\Traits\SMS\protocol\SmppAddress;
@@ -35,6 +37,7 @@ trait SmsSendTrait
         $mobile_local = substr($to_rqst, -8);
         $mobile_inter = $indicatif.$mobile_local;
 
+        // mark processing
         $this->send_processing = true;
         $this->save();
         // Add $nb_send_processing to smsresult
@@ -58,6 +61,7 @@ trait SmsSendTrait
             $this->addToReport(0, $report_msg, -1);
         }
 
+        // unmark processing
         $this->send_processed = true;
         $this->nb_try += 1;
         $this->sendingend_at = Carbon::now();
@@ -65,6 +69,9 @@ trait SmsSendTrait
 
         // Add $nb_send_processed, $nb_send_success, $nb_send_failed to smsresult
         $planning->addSendResult(0, 0, ($this->send_success ? 1 : 0), ($this->send_success ? 0 : 1), 1);
+
+        $campaign_forevent = Smscampaign::where('id', $planning->smscampaign_id)->first();
+        event(new SmsresultEvent($campaign_forevent,$planning->campaign->smsresult));
     }
 
     private function rawSend($from_rqst,$msg,$mobile_inter,&$report_msg) {

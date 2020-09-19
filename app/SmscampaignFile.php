@@ -25,6 +25,7 @@ use App\Traits\SuspendableTrait;
  * @property integer|null $smsimport_status_id
  *
  * @property integer $nb_rows
+ * @property boolean $import_processing
  * @property integer $nb_rows_success
  * @property integer $nb_rows_failed
  * @property integer $nb_rows_processing

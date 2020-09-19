@@ -87,11 +87,11 @@
                                             </div>
                                             <!-- /.col -->
                                             <div class="col-md-3 col-sm-6 col-12">
-                                                <ImportResult :smsresult_prop="campaign.smsresult"></ImportResult>
+                                                <ImportResult :smsresult_prop="campaign.smsresult" :campaign_prop="campaign"></ImportResult>
                                             </div>
                                             <!-- /.col -->
                                             <div class="col-md-3 col-sm-6 col-12">
-                                                <SendResult :smsresult_prop="campaign.smsresult"></SendResult>
+                                                <SendResult :smsresult_prop="campaign.smsresult" :campaign_prop="campaign"></SendResult>
                                             </div>
                                             <!-- /.col -->
 
