@@ -42,10 +42,15 @@ trait SmsSendTrait
         $this->save();
         // Add $nb_send_processing to smsresult
         $planning->addSendResult(0, 1, 0, 0, 0);
+        // decrement failed if any
+        if ($this->nb_try > 0) {
+            //addSendResult($nb_to_send, $nb_send_processing, $nb_send_success, $nb_send_failed, $nb_send_processed)
+            $planning->addSendResult(0, 0, 0, -1, 0);
+        }
 
         $report_msg = "";
-        //$send_ok = $this->rawSend($from_rqst,$msg,$mobile_inter,$report_msg);
-        $send_ok = $this->rawSendTest($from_rqst,$msg,$mobile_inter,$report_msg);
+        $send_ok = $this->rawSend($from_rqst,$msg,$mobile_inter,$report_msg);
+        //$send_ok = $this->rawSendTest($from_rqst,$msg,$mobile_inter,$report_msg);
 
         $this->send_processing = false;
         $this->save();
