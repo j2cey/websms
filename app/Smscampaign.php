@@ -194,4 +194,90 @@ class Smscampaign extends Model
             $model->setUuid();
         });
     }
+
+    #region Import results
+    public function getNbToImport(): int
+    {
+        $nb_to_import = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_to_import += $planning->getNbToImport();
+        }
+        return $nb_to_import;
+    }
+    public function getNbImportProcessing(): int
+    {
+        $nb_import_processing = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_import_processing += $planning->getNbImportProcessing();
+        }
+        return $nb_import_processing;
+    }
+    public function getNbImportSuccess(): int
+    {
+        $nb_import_success = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_import_success += $planning->getNbImportSuccess();
+        }
+        return $nb_import_success;
+    }
+    public function getNbImportFailed(): int
+    {
+        $nb_import_failed = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_import_failed += $planning->getNbImportFailed();
+        }
+        return $nb_import_failed;
+    }
+    public function getNbImportProcessed(): int
+    {
+        $nb_import_processed = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_import_processed += $planning->getNbImportProcessed();
+        }
+        return $nb_import_processed;
+    }
+    #endregion
+
+    #region Send results
+    public function getNbToSend(): int
+    {
+        $nb_to_send = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_to_send += $planning->getNbToSend();
+        }
+        return $nb_to_send;
+    }
+    public function getNbSendProcessing(): int
+    {
+        $nb_send_processing = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_send_processing += $planning->getNbSendProcessing();
+        }
+        return $nb_send_processing;
+    }
+    public function getNbSendSuccess(): int
+    {
+        $nb_send_success = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_send_success += $planning->getNbSendSuccess();
+        }
+        return $nb_send_success;
+    }
+    public function getNbSendFailed(): int
+    {
+        $nb_send_failed = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_send_failed += $planning->getNbSendFailed();
+        }
+        return $nb_send_failed;
+    }
+    public function getNbSendProcessed(): int
+    {
+        $nb_send_processed = 0;
+        foreach ($this->plannings as $planning) {
+            $nb_send_processed += $planning->getNbSendProcessed();
+        }
+        return $nb_send_processed;
+    }
+    #endregion
 }

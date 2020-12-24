@@ -139,7 +139,7 @@ class SmscampaignController extends Controller
             'user_id' => $user->id,
         ]);
 
-        $new_smscampaign->addFile( $fullpathfile, ($request->has('premiere_ligne_entete')) );
+        $new_smscampaign->addFile( $fullpathfile, $request->getCheckValue('premiere_ligne_entete'));//($request->has('premiere_ligne_entete')) );
 
         // Sessions Message
         //$request->session()->flash('msg_success',"Campagne créée avec Succès.");

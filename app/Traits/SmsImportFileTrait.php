@@ -39,7 +39,7 @@ trait SmsImportFileTrait
                         $can_process_line = true;
                         $this->nb_rows_failed -= 1;
                         $this->nb_rows_processed -= 1;
-                        $planning->addImportResult(0, 0, 0, -1, -1);
+                        //$planning->addImportResult(0, 0, 0, -1, -1);
                     } else {
                         // line déjà traité avec succès, alors ...
                         // on la remet dans le rapport
@@ -54,8 +54,9 @@ trait SmsImportFileTrait
             if ($can_process_line) {
 
                 $this->nb_rows_processing += 1;
-                $planning->addImportResult(0, 1, 0, 0, 0);
+                //$planning->addImportResult(0, 1, 0, 0, 0);
                 $this->save();
+                //$planning->setImportResult();
 
                 $receiver = new SmscampaignReceiver();
                 $msg = "";
@@ -72,7 +73,7 @@ trait SmsImportFileTrait
                         'report' => json_encode([]),
                     ]);
                     $this->nb_rows_success += 1;
-                    $planning->addSendResult(1, 0, 0, 0, 0);
+                    //$planning->addSendResult(1, 0, 0, 0, 0);
                 } else {
                     $this->nb_rows_failed += 1;
                 }
@@ -81,15 +82,16 @@ trait SmsImportFileTrait
                 $this->nb_rows_processed += 1;
 
                 // Save smsresult
-                $planning->addImportResult(0, -1, ($row_parse_ok ? 1 : 0), ($row_parse_ok ? 0 : 1), 1);
+                //$planning->addImportResult(0, -1, ($row_parse_ok ? 1 : 0), ($row_parse_ok ? 0 : 1), 1);
 
                 $this->save();
+                $planning->setImportResult();
 
                 // MAJ du SmscampaingFile
                 $this->row_last_processed = $row_current;
 
-                $campaign_forevent = Smscampaign::where('id', $planning->smscampaign_id)->first();
-                event(new SmsresultEvent($campaign_forevent,$planning->campaign->smsresult));
+                //$campaign_forevent = Smscampaign::where('id', $planning->smscampaign_id)->first();
+                //event(new SmsresultEvent($campaign_forevent,$planning->campaign->smsresult));
             }
             $this->setStatus();
         }
@@ -97,6 +99,7 @@ trait SmsImportFileTrait
         // unmark as processing
         $this->import_processing = 0;
         $this->save();
+        $planning->setImportResult();
     }
 
     private function parseMsg($msg_in, &$msg_out, &$report_msg) {

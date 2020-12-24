@@ -3,11 +3,12 @@
 namespace App\Http\Requests\Smscampaign;
 
 use App\Smscampaign;
+use App\Traits\Request\RequestTraits;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSmscampaignRequest extends FormRequest
 {
-    use SmscampaignRequestTrait;
+    use SmscampaignRequestTrait, RequestTraits;
     /**
      * Determine if the user is authorized to make this request.
      *

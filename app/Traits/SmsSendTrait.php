@@ -39,14 +39,18 @@ trait SmsSendTrait
 
         // mark processing
         $this->send_processing = true;
-        $this->save();
+
         // Add $nb_send_processing to smsresult
-        $planning->addSendResult(0, 1, 0, 0, 0);
+        //$planning->addSendResult(0, 1, 0, 0, 0);
+        $planning->setSendResult();
         // decrement failed if any
         if ($this->nb_try > 0 && $this->send_success == 0) {
             //addSendResult($nb_to_send, $nb_send_processing, $nb_send_success, $nb_send_failed, $nb_send_processed)
-            $planning->addSendResult(0, 0, 0, -1, 0);
+            //$planning->addSendResult(0, 0, 0, -1, 0);
+            $this->send_processed = false;
         }
+        $this->save();
+        $planning->setSendResult();
 
         $report_msg = "";
         //$send_ok = $this->rawSend($from_rqst,$msg,$mobile_inter,$report_msg);
@@ -56,7 +60,8 @@ trait SmsSendTrait
         $this->save();
 
         // Remove $nb_send_processing from smsresult
-        $planning->addSendResult(0, -1, 0, 0, 0);
+        //$planning->addSendResult(0, -1, 0, 0, 0);
+        $planning->setSendResult();
 
         if ($send_ok) {
             $this->send_success = true;
@@ -73,7 +78,8 @@ trait SmsSendTrait
         $this->save();
 
         // Add $nb_send_processed, $nb_send_success, $nb_send_failed to smsresult
-        $planning->addSendResult(0, 0, ($this->send_success ? 1 : 0), ($this->send_success ? 0 : 1), 1);
+        //$planning->addSendResult(0, 0, ($this->send_success ? 1 : 0), ($this->send_success ? 0 : 1), 1);
+        $planning->setSendResult();
 
         $campaign_forevent = Smscampaign::where('id', $planning->smscampaign_id)->first();
         event(new SmsresultEvent($campaign_forevent,$planning->campaign->smsresult));

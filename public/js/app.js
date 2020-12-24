@@ -53310,7 +53310,7 @@ var render = function() {
     _c("div", { staticClass: "info-box-content" }, [
       _vm._m(1),
       _vm._v(" "),
-      _c("p", { staticClass: "info-box-text m-b-30 font-10" }, [
+      _c("p", { staticClass: "info-box-text m-b-30 font-8" }, [
         _vm._v("Total à importer: "),
         _c("span", { staticClass: "info-box-number" }, [
           _vm._v(_vm._s(_vm.to_import))
@@ -53659,7 +53659,7 @@ var render = function() {
     _c("div", { staticClass: "info-box-content" }, [
       _vm._m(1),
       _vm._v(" "),
-      _c("p", { staticClass: "m-b-30 font-10" }, [
+      _c("p", { staticClass: "m-b-30 font-8" }, [
         _vm._v("\n            Total à envoyer: "),
         _c("span", { staticClass: "info-box-number" }, [
           _vm._v(_vm._s(_vm.to_send))
@@ -69178,7 +69178,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
   broadcaster: 'socket.io',
-  host: "http://websms.j2c" + ':6001'
+  host: "http://localhost" + ':6001'
 });
 
 /***/ }),
@@ -69995,8 +69995,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/judeparfaitngomnze/VMs/VagrantVMs/puppetlabs_ubuntu_14/www/websms/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/judeparfaitngomnze/VMs/VagrantVMs/puppetlabs_ubuntu_14/www/websms/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/judeparfaitngomnze/VMs/VagrantVMs/bento_ubuntu_20_04/www/websms/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/judeparfaitngomnze/VMs/VagrantVMs/bento_ubuntu_20_04/www/websms/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

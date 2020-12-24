@@ -115,4 +115,50 @@ class SmscampaignPlanning extends Model
             $model->setUuid();
         });
     }
+
+    #region Import results
+    public function getNbToImport(): int
+    {
+        return $this->files()->sum('nb_rows');
+    }
+    public function getNbImportProcessing(): int
+    {
+        return $this->files()->sum('nb_rows_processing');
+    }
+    public function getNbImportSuccess(): int
+    {
+        return $this->files()->sum('nb_rows_success');
+    }
+    public function getNbImportFailed(): int
+    {
+        return $this->files()->sum('nb_rows_failed');
+    }
+    public function getNbImportProcessed(): int
+    {
+        return $this->files()->sum('nb_rows_processed');
+    }
+    #endregion
+
+    #region Send results
+    public function getNbToSend(): int
+    {
+        return $this->lines()->count();
+    }
+    public function getNbSendProcessing(): int
+    {
+        return $this->lines()->where('send_processing', 1)->count();
+    }
+    public function getNbSendSuccess(): int
+    {
+        return $this->lines()->where('send_success', 1)->count();
+    }
+    public function getNbSendFailed(): int
+    {
+        return $this->lines()->where('send_success', 0)->count();
+    }
+    public function getNbSendProcessed(): int
+    {
+        return $this->lines()->where('send_processed', 1)->count();
+    }
+    #endregion
 }

@@ -5,7 +5,7 @@
         <div class="info-box-content">
             <span class="info-box-text font-14"><strong><u>Importation</u></strong></span>
 
-            <p class="info-box-text m-b-30 font-10">Total à importer: <span class="info-box-number">{{ to_import }}</span>
+            <p class="info-box-text m-b-30 font-8">Total à importer: <span class="info-box-number">{{ to_import }}</span>
                 Succès: <span class="badge badge-primary">{{ import_success }}</span>
                 Echecs: <span class="badge badge-danger">{{ import_failed }}</span>
             </p>

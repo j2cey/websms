@@ -7,6 +7,170 @@ use Illuminate\Support\Carbon;
 
 trait SmsResultTrait
 {
+    /**
+     * Get the number of elements to import.
+     * @return int
+     */
+    abstract public function getNbToImport(): int;
+    /**
+     * Get the number of importation processing.
+     * @return int
+     */
+    abstract public function getNbImportProcessing(): int;
+    /**
+     * Get the number of importation successed.
+     * @return int
+     */
+    abstract public function getNbImportSuccess(): int;
+    /**
+     * Get the number of importation failed.
+     * @return int
+     */
+    abstract public function getNbImportFailed(): int;
+    /**
+     * Get the number of importation processed.
+     * @return int
+     */
+    abstract public function getNbImportProcessed(): int;
+
+
+    /**
+     * Get the number of elements to send.
+     * @return int
+     */
+    abstract public function getNbToSend(): int;
+    /**
+     * Get the number of send processing.
+     * @return int
+     */
+    abstract public function getNbSendProcessing(): int;
+    /**
+     * Get the number of send successed.
+     * @return int
+     */
+    abstract public function getNbSendSuccess(): int;
+    /**
+     * Get the number of send failed.
+     * @return int
+     */
+    abstract public function getNbSendFailed(): int;
+    /**
+     * Get the number of send processed.
+     * @return int
+     */
+    abstract public function getNbSendProcessed(): int;
+
+
+    public function setImportResult() {
+        if (is_null($this->smsresult_id)) {
+            $this->createNewResult(true);
+        }
+
+        $this->updateImportResult();
+
+        $this->setStatus(true);
+
+        // Import rate
+        if ($this->smsresult && ($this->smsresult->nb_to_import > 0)) {
+            $this->smsresult->update([
+                'import_rate' => round((($this->smsresult->nb_import_processed) / $this->smsresult->nb_to_import) * 100, 0)
+            ]);
+        } else {
+            $this->smsresult->update([ 'import_rate' => 0 ]);
+        }
+
+        // si l'appellant est un planning, on met à jour la partie importation de son smsresult de sa campagne parente
+        if (isset($this->campaign)) {
+            $this->campaign->setImportResult();
+        }
+    }
+
+    public function setSendResult() {
+        if (is_null($this->smsresult_id)) {
+            $this->createNewResult(false);
+        }
+
+        $this->updateSendResult();
+
+        $this->setStatus(true);
+
+        // Send Rate
+        if ($this->smsresult && ($this->smsresult->nb_to_send > 0)) {
+            $this->smsresult->update([
+                'send_rate' => round(($this->smsresult->nb_send_processed / $this->smsresult->nb_to_send) * 100, 0)
+            ]);
+        } else {
+            $this->smsresult->update([ 'send_rate' => 0 ]);
+        }
+
+        // si l'appellant est un planning, on met à jour la partie envoie de son smsresult de sa campagne parente
+        if (isset($this->campaign)) {
+            $this->campaign->setSendResult();
+        }
+    }
+
+    private function createNewResult($importing = false) {
+        $default_values = [
+            'nb_to_import' => 0,
+            'nb_import_processing' => 0,
+            'nb_import_success' => 0,
+            'nb_import_failed' => 0,
+            'nb_import_processed' => 0,
+
+            'nb_to_send' => 0,
+            'nb_send_processing' => 0,
+            'nb_send_success' => 0,
+            'nb_send_failed' => 0,
+            'nb_send_processed' => 0,
+        ];
+        if ($importing) {
+            $default_values['importstart_at'] = Carbon::now();
+        } else {
+            $default_values['sendingstart_at'] = Carbon::now();
+        }
+        $new_importresult = Smsresult::create($default_values);
+        $this->update([
+            'smsresult_id' => $new_importresult->id,
+        ]);
+    }
+
+    private function updateImportResult() {
+        $data_array = [
+            'nb_to_import' => $this->getNbToImport(),
+            'nb_import_processing' => $this->getNbImportProcessing(),
+            'nb_import_success' => $this->getNbImportSuccess(),
+            'nb_import_failed' => $this->getNbImportFailed(),
+            'nb_import_processed' => $this->getNbImportProcessed(),
+        ];
+
+        if ($data_array['nb_to_import'] > 0 && ($data_array['nb_to_import']== $data_array['nb_import_processed'])) {
+            $data_array['importend_at'] = Carbon::now();
+        }
+        $upd_rslt = $this->smsresult->update($data_array);
+        dump($data_array);
+        dump($upd_rslt);
+    }
+    private function updateSendResult() {
+        $data_array = [
+            'nb_to_send' => $this->getNbToSend(),
+            'nb_send_processing' => $this->getNbSendProcessing(),
+            'nb_send_success' => $this->getNbSendSuccess(),
+            'nb_send_failed' => $this->getNbSendFailed(),
+            'nb_send_processed' => $this->getNbSendProcessed(),
+        ];
+
+        if ($data_array['nb_to_send'] > 0 && ($data_array['nb_to_send'] == $data_array['nb_send_processed'])) {
+            $data_array['sendingend_at'] = Carbon::now();
+        }
+        $this->smsresult->update($data_array);
+    }
+
+
+
+
+
+
+
     public function addImportResult($nb_to_import, $nb_import_processing, $nb_import_success, $nb_import_failed, $nb_import_processed) {
 
         if (is_null($this->smsresult_id)) {

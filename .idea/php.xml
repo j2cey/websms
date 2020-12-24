@@ -110,6 +110,7 @@
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/graphviz" />
       <path value="$PROJECT_DIR$/vendor/beyondcode/laravel-er-diagram-generator" />
       <path value="$PROJECT_DIR$/vendor/watson/breadcrumbs" />
+      <path value="$PROJECT_DIR$/vendor/predis/predis" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

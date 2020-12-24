@@ -5,7 +5,7 @@
         <div class="info-box-content">
             <span class="info-box-text font-14"><strong><u>Envoi</u></strong></span>
 
-            <p class="m-b-30 font-10">
+            <p class="m-b-30 font-8">
                 Total à envoyer: <span class="info-box-number">{{ to_send }}</span>
                 Succès: <span class="badge badge-success">{{ send_success }}</span>
                 Echecs: <span class="badge badge-danger">{{ send_failed }}</span>

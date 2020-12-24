@@ -16,6 +16,7 @@ trait SmscampaignTrait
     {
         //turn into array
         $file = file($fullpathfile);
+        //$file_count = count($file);
 
         if ($entete_premiere_ligne) {
             //remove first line
@@ -28,6 +29,8 @@ trait SmscampaignTrait
         $file_max_line = 500;
         $parts = (array_chunk($data, $file_max_line));
         $parts_count = count($parts);
+
+        //dd($entete_premiere_ligne, $file_count, $parts, $parts_count);
 
         if ($parts_count > 0) {
 
@@ -48,6 +51,7 @@ trait SmscampaignTrait
                 $filename_full = $pendingfiles_dir . '/' . $filename;
 
                 file_put_contents($filename_full, $line);
+                file_put_contents($filename_full, PHP_EOL, FILE_APPEND);
                 $i++;
 
                 $nb_rows_curr = intval(exec("wc -l '" . $filename_full . "'"));
@@ -60,7 +64,8 @@ trait SmscampaignTrait
                 ]);
 
                 $nb_rows_all += $nb_rows_curr;
-                $new_planning->addImportResult($nb_rows_curr, 0, 0, 0, 0);
+                //$new_planning->addImportResult($nb_rows_curr, 0, 0, 0, 0);
+                $new_planning->setImportResult();
             }
             //$new_planning->setStatus();
         }
