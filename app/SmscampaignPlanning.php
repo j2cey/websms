@@ -150,11 +150,11 @@ class SmscampaignPlanning extends Model
     }
     public function getNbSendSuccess(): int
     {
-        return $this->lines()->where('send_success', 1)->count();
+        return $this->lines()->where('send_processed', 1)->where('send_success', 1)->count();
     }
     public function getNbSendFailed(): int
     {
-        return $this->lines()->where('send_success', 0)->count();
+        return $this->lines()->where('send_processed', 1)->where('send_success', 0)->count();
     }
     public function getNbSendProcessed(): int
     {
