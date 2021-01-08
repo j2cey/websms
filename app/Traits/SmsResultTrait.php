@@ -128,9 +128,9 @@ trait SmsResultTrait
         } else {
             $default_values['sendingstart_at'] = Carbon::now();
         }
-        $new_importresult = Smsresult::create($default_values);
+        $new_result = Smsresult::create($default_values);
         $this->update([
-            'smsresult_id' => $new_importresult->id,
+            'smsresult_id' => $new_result->id,
         ]);
     }
 
@@ -158,6 +158,11 @@ trait SmsResultTrait
             'nb_send_failed' => $this->getNbSendFailed(),
             'nb_send_processed' => $this->getNbSendProcessed(),
         ];
+
+        // set sending start if not yet
+        if (! $this->smsresult->sendingstart_at) {
+            $data_array['sendingstart_at'] = Carbon::now();
+        }
 
         if ($data_array['nb_to_send'] > 0 && ($data_array['nb_to_send'] == $data_array['nb_send_processed'])) {
             $data_array['sendingend_at'] = Carbon::now();
