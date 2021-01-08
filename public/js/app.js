@@ -53420,7 +53420,17 @@ var render = function() {
                             _c(
                               "span",
                               { staticClass: "username text-primary" },
-                              [_vm._v(_vm._s(campaign.titre))]
+                              [
+                                _c(
+                                  "a",
+                                  {
+                                    attrs: {
+                                      href: "/smscampaigns/" + campaign.uuid
+                                    }
+                                  },
+                                  [_vm._v(_vm._s(campaign.titre))]
+                                )
+                              ]
                             ),
                             _vm._v(" "),
                             _c("span", { staticClass: "description" }, [

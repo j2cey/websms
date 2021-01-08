@@ -40,8 +40,11 @@
                         <dt class="col-sm-3">Description</dt>
                         <dd class="col-sm-9">{{ $smscampaign->description ?? '' }}</dd>
 
-                        <dt class="col-sm-3">Séeparateur Colonnes</dt>
+                        <dt class="col-sm-3">Séparateur Colonnes</dt>
                         <dd class="col-sm-9">{{ $smscampaign->separateur_colonnes ?? '' }}</dd>
+
+                        <dt class="col-sm-3">Date Création</dt>
+                        <dd class="col-sm-9">{{ $smscampaign->created_at ? date('d-m-Y H:i:s', strtotime($smscampaign->created_at)) : '' }}</dd>
 
                     </dl>
 
@@ -72,6 +75,12 @@
                                 Echecs: <span class="badge badge-danger">{{ $smscampaign->smsresult ? $smscampaign->smsresult->nb_import_failed : 0 }}</span>
                             </p>
 
+                            <p class="text-muted m-b-30 font-10">
+                                Début importion: <span class="badge badge-default">{{ $smscampaign->smsresult ? ( $smscampaign->smsresult->importstart_at ? date('d/m/Y H:i:s', strtotime($smscampaign->smsresult->importstart_at)) : '' ) : '' }}</span>
+                                -
+                                Fin importion: <span class="badge badge-default">{{ $smscampaign->smsresult ? ( $smscampaign->smsresult->importend_at ? date('d/m/Y H:i:s', strtotime($smscampaign->smsresult->importend_at)) : '' ) : '' }}</span>
+                            </p>
+
                             <div class="">
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" style="width: {{ $smscampaign->getImportPercentage() . '%' }};" aria-valuenow="{{ $smscampaign->getImportPercentage() }}" aria-valuemin="0" aria-valuemax="100">{{ $smscampaign->getImportPercentage() }}%</div>
@@ -100,6 +109,12 @@
                                 Succès: <span class="badge badge-success">{{ $smscampaign->smsresult ? $smscampaign->smsresult->nb_send_success : 0 }}</span>
                                 .
                                 Echecs: <span class="badge badge-danger">{{ $smscampaign->smsresult ? $smscampaign->smsresult->nb_send_failed : 0 }}</span>
+                            </p>
+
+                            <p class="text-muted m-b-30 font-10">
+                                Début envoie: <span class="badge badge-default">{{ $smscampaign->smsresult ? ( $smscampaign->smsresult->sendingstart_at ? date('d/m/Y H:i:s', strtotime($smscampaign->smsresult->sendingstart_at)) : '' ) : '' }}</span>
+                                -
+                                Fin envoie: <span class="badge badge-default">{{ $smscampaign->smsresult ? ( $smscampaign->smsresult->sendingend_at ? date('d/m/Y H:i:s', strtotime($smscampaign->smsresult->sendingend_at)) : '' ) : '' }}</span>
                             </p>
 
                             <div class="">

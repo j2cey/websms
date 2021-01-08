@@ -49,7 +49,7 @@
                             <div class="card card-widget" v-for="(campaign, index) in campaigns" v-if="campaigns">
                                 <div class="card-header">
                                     <div class="user-block">
-                                        <span class="username text-primary">{{ campaign.titre }}</span>
+                                        <span class="username text-primary"> <a :href="'/smscampaigns/' + campaign.uuid " >{{ campaign.titre }}</a> </span>
                                         <span class="description">{{ campaign.type.titre }}</span>
                                     </div>
                                     <!-- /.user-block -->

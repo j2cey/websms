@@ -147,8 +147,8 @@ trait SmsResultTrait
             $data_array['importend_at'] = Carbon::now();
         }
         $upd_rslt = $this->smsresult->update($data_array);
-        dump($data_array);
-        dump($upd_rslt);
+        //dump($data_array);
+        //dump($upd_rslt);
     }
     private function updateSendResult() {
         $data_array = [
